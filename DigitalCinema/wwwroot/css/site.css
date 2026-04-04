@@ -1,0 +1,94 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+
+/* ?????? ??????? */
+/*.custom-table {
+    background: #0f172a;*/ /* ???? ???? */
+    /*color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;*/
+    /* ??????? + ??????? */
+    /*box-shadow: 0 0 15px rgba(255, 193, 7, 0.4), 0 0 30px rgba(255, 193, 7, 0.2), 0 10px 30px rgba(0,0,0,0.6);
+}*/
+
+    /* ?????? */
+    /*.custom-table thead {
+        background: #1e293b;*/ /* ???? ???? ?? ?????? */
+        /*color: #facc15;*/ /* ???? ???? */
+        /*text-transform: uppercase;
+        letter-spacing: 1px;
+    }*/
+
+    /* ?????? */
+    /*.custom-table tbody tr {
+        transition: all 0.3s ease;
+    }*/
+
+        /* Hover */
+        /*.custom-table tbody tr:hover {
+            background-color: #1e293b;
+            transform: scale(1.01);
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+        }*/
+
+        /* ???? ??????? */
+        /*.custom-table tbody tr:nth-child(even) {
+            background-color: #020617;
+        }*/
+
+/* ?????? */
+/*.actor-img {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #facc15;
+}*/
+
+/* ??????? */
+/*.btn-warning {
+    background-color: #facc15;
+    color: black;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    border: none;
+}*/
+
+/* Hover ??????? */
+/*.btn:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}*/
