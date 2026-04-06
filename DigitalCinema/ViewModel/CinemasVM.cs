@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.ViewModels
+﻿namespace DigitalCinema.ViewModels
 {
     public class CinemasVM
     {

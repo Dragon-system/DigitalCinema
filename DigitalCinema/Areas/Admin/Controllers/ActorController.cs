@@ -1,5 +1,5 @@
 ﻿using DigitalCinema.Areas.Admin.Controllers;
-using Ecommerce.ViewModels;
+using DigitalCinema.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;

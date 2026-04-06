@@ -6,7 +6,7 @@
        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string MainImg { get; set; } = string.Empty;
-        public string SaubImg { get; set; } = string.Empty;
+      
         public decimal Price { get; set; }
         public DateTime ShowTime { get; set; } = DateTime.Now;
         
@@ -16,6 +16,6 @@
         public int CinemaId { get; set; }
         public Cinema Cinema { get; set; } = null!;
 
-        public List<Actor> Actors { get; set; } = new();
+        public List<ActorMovie> ActorMovies { get; set; } = new();
     }
 }

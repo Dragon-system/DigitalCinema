@@ -8,6 +8,7 @@ namespace DigitalCinema.DataAccess
     {
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<SupImg> SupImgs { get; set; }
         public DbSet<ActorMovie> ActorMovies { get; set; }
 
         public DbSet<Category> Categories { get; set; }

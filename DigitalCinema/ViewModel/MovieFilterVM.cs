@@ -1,6 +1,6 @@
-﻿namespace Ecommerce.ViewModels
+﻿namespace DigitalCinema.ViewModels
 {
-    namespace Ecommerce.ViewModels
+    namespace DigitalCinema.ViewModels
     {
         public class MovieFilterVM//(string Name, double? MainPrice, double? MaxPrice, string CategoryName, string BrandName)
         {
@@ -9,6 +9,8 @@
             public decimal? MaxPrice { get; set; }
             public int? CategoryId { get; set; }
             public int? CinemaId { get; set; }
+         
+
 
             // Constructor فاضي (مهم)
             public MovieFilterVM()

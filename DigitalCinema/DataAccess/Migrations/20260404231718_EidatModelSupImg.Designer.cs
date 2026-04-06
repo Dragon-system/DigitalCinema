@@ -4,6 +4,7 @@ using DigitalCinema.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalCinema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404231718_EidatModelSupImg")]
+    partial class EidatModelSupImg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,9 @@ namespace DigitalCinema.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
+                    b.Property<int?>("MovieId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
@@ -43,6 +49,8 @@ namespace DigitalCinema.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
 
                     b.ToTable("Actors");
                 });
@@ -158,18 +166,28 @@ namespace DigitalCinema.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("MovieId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("SubImg")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("movieId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("movieId");
 
                     b.ToTable("SupImgs");
+                });
+
+            modelBuilder.Entity("DigitalCinema.Models.Actor", b =>
+                {
+                    b.HasOne("DigitalCinema.Models.Movie", null)
+                        .WithMany("Actors")
+                        .HasForeignKey("MovieId");
                 });
 
             modelBuilder.Entity("DigitalCinema.Models.ActorMovie", b =>
@@ -181,7 +199,7 @@ namespace DigitalCinema.Migrations
                         .IsRequired();
 
                     b.HasOne("DigitalCinema.Models.Movie", "Movie")
-                        .WithMany("ActorMovies")
+                        .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -214,7 +232,7 @@ namespace DigitalCinema.Migrations
                 {
                     b.HasOne("DigitalCinema.Models.Movie", "movie")
                         .WithMany()
-                        .HasForeignKey("MovieId")
+                        .HasForeignKey("movieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -233,7 +251,7 @@ namespace DigitalCinema.Migrations
 
             modelBuilder.Entity("DigitalCinema.Models.Movie", b =>
                 {
-                    b.Navigation("ActorMovies");
+                    b.Navigation("Actors");
                 });
 #pragma warning restore 612, 618
         }
