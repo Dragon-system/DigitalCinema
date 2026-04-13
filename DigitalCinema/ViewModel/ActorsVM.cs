@@ -6,6 +6,6 @@
 
         public double TotalPages { get; set; }
         public int CurrentPage { get; set; }
-        //public string Query { get; set; } 
+        public string? Query { get; set; }
     }
 }

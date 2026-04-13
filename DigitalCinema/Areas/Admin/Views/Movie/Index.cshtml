@@ -87,7 +87,7 @@
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-between pb-3 px-3">
                             <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm px-3 rounded-pill">Edite</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm px-3 rounded-pill" onclick="return confirm('حذف الفيلم؟')">Delete</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm px-3 rounded-pill"> <i class="bi bi-trash"></i>Delete</a>
                         </div>
                     </div>
                 </div>
@@ -144,3 +144,38 @@
         border-color: #333;
     }
 </style>
+
+    <script>
+        // السكريبت هيفضل زي ما هو عشان الـ SweetAlert
+        document.addEventListener("DOMContentLoaded", function() {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success btn-sm mx-2",
+                    cancelButton: "btn btn-danger btn-sm mx-2"
+                },
+                buttonsStyling: false
+            });
+
+            const deleteButtons = document.querySelectorAll(".btn-delete");
+
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute("href");
+
+                    swalWithBootstrapButtons.fire({
+                        title: "Sure?",
+                        text: "Delete this cinema?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url;
+                        }
+                    });
+                });
+            });
+        });
+    </script>

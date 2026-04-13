@@ -1,59 +1,64 @@
 ﻿@model CinemasVM
 
-<!-- On tables --><div class="container">
-    <div class="row mb-3 align-items-center my-3">
+<div class="container my-4">
+    <div class="row mb-4 align-items-center bg-white p-2 rounded shadow-sm border-start border-success border-5">
         <div class="col-md-6">
-            <h2 class="display-6">All Cinemas</h2>
+            <h4 class="m-0 fw-bold text-dark">Cinema Management</h4>
         </div>
-        <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
-            <a href="/Admin/Cinema/Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Create</a>
+        <div class="col-md-6 text-md-end">
+            <a href="/Admin/Cinema/Create" class="btn btn-success btn-sm px-3 rounded-pill">
+                <i class="bi bi-plus-circle"></i> Add New Cinema
+            </a>
         </div>
     </div>
-    <!-- Filter Section -->
-    <section class="py-3 filter-bar">
-        <div class="container">
-            <div class="row" style="background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;">
-                <div class="custom-form">
-                    <form>
-                        <div class="filter-wrapper">
-                            <!-- Cinema Name -->
-                            <div class="filter-col">
-                                <input type="text" class="form-control filter-input" placeholder="Filter" name="query" value="@ViewBag.Query">
-                            </div>
 
-                            <!-- Submit Button -->
-                            <div class="filter-col">
-                                <button type="submit" class="btn-custom">Filter</button>
-                            </div>
-                        </div>
-                    </form>
+    <div class="card border-0 shadow-sm bg-light p-3 mb-3">
+        <form method="get" asp-action="Index">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-10">
+                    <label class="small fw-bold text-muted mb-1">Search Cinema</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="Search..." name="query" value="@Model.Query">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark btn-sm w-100"><i class="bi bi-funnel"></i> Filter</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </form>
+    </div>
 
-    <div class="row">
-        <div class="col-12">
-            <table class="table custom-table text-center align-middle">
-                <thead>
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover text-center align-middle mb-0">
+                <thead class="bg-dark text-white">
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Logo</th>
+                        <th scope="col" class="py-2 small">#ID</th>
+                        <th scope="col" class="py-2 small">Logo</th>
+                        <th scope="col" class="py-2 small">Name</th>
+                        <th scope="col" class="py-2 small">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.Cinemas)
                     {
                         <tr>
-                            <th scope="row">@item.Id</th>
-                            <td>@item.Name</td>
+                            <td class="text-muted small">@item.Id</td>
                             <td>
-                                <img src="~/images/Cinema/@item.Img" alt="@item.Name" style="max-width: 100px; border: 1px solid #ccc; padding:5px; border-radius:10px">
+                                <div class="d-inline-block p-1 border rounded bg-white shadow-sm">
+                                    <img src="~/images/Cinema/@item.Img"
+                                         alt="@item.Name"
+                                         style="width: 60px; height: 35px; object-fit: contain;">
+                                </div>
                             </td>
+                            <td class="fw-bold text-secondary">@item.Name</td>
                             <td>
-                                <a href="/Admin/Cinema/Update/@item.Id" type="button" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
-                                <a href="/Admin/Cinema/Delete/@item.Id" class="btn btn-danger btn-delete"><i class="bi bi-trash"></i> Delete</a>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="/Admin/Cinema/Update/@item.Id" class="btn btn-outline-warning btn-sm px-2 rounded-pill" style="font-size: 0.8rem;">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <button href="/Admin/Cinema/Delete/@item.Id" class="btn btn-outline-danger btn-sm px-2 rounded-pill btn-delete" style="font-size: 0.8rem;">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -61,79 +66,85 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    @if (Model.CurrentPage > 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="/Admin/Cinema/Index?page=@(Model.CurrentPage - 1)">Previous</a></li>
-                    }
-                    @for (var i = 1; i <= Model.TotalPages; i++)
-                    {
-                        @if (i == Model.CurrentPage)
-                        {
-                            <li class="page-item active"><a class="page-link" href="/Admin/Cinema/Index?page=@i">@i</a></li>
-                        }
-                        else
-                        {
-                            <li class="page-item"><a class="page-link" href="/Admin/Cinema/Index?page=@i">@i</a></li>
-                        }
-                    }
-                    @if (Model.CurrentPage != Model.TotalPages)
-                    {
-                        <li class="page-item"><a class="page-link" href="/Admin/Cinema/Index?page=@(Model.CurrentPage + 1)">Next</a></li>
-                    }
-                </ul>
-            </nav>
-        </div>
-    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-4 border-top pt-3">
+            <ul class="pagination pagination-sm justify-content-center">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link shadow-sm" href="/Admin/Cinema/Index?page=@(Model.CurrentPage - 1)&query=@Model.Query">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link shadow-sm" href="/Admin/Cinema/Index?page=@i&query=@Model.Query">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link shadow-sm" href="/Admin/Cinema/Index?page=@(Model.CurrentPage + 1)&query=@Model.Query">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
 
+<style>
+    /* تصغير حجم الخط العام للجدول */
+    .table {
+        font-size: 0.9rem;
+    }
+
+        .table thead th {
+            font-weight: 500;
+            text-transform: capitalize;
+            font-size: 0.8rem;
+        }
+
+    .page-item.active .page-link {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    /* تخفيف حدة الـ hover */
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
 <script>
+    // السكريبت هيفضل زي ما هو عشان الـ SweetAlert
     document.addEventListener("DOMContentLoaded", function() {
-        // إعداد Swal مع أزرار Bootstrap
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: "btn btn-danger"
+                confirmButton: "btn btn-success btn-sm mx-2",
+                cancelButton: "btn btn-danger btn-sm mx-2"
             },
             buttonsStyling: false
         });
 
-        // تحديد كل أزرار Delete
         const deleteButtons = document.querySelectorAll(".btn-delete");
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", function(e) {
-                e.preventDefault(); // يمنع التحويل الفوري للرابط
+                e.preventDefault();
+                const url = this.getAttribute("href");
 
-                const url = this.getAttribute("href"); // رابط الحذف
-
-                // رسالة تأكيد الحذف
                 swalWithBootstrapButtons.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
+                    title: "Sure?",
+                    text: "Delete this cinema?",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, cancel!",
-                    reverseButtons: true
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // لو Confirm اتضغط، نروح للرابط عشان يحصل الحذف
                         window.location.href = url;
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // لو Cancel اتضغط، رسالة إلغاء
-                        swalWithBootstrapButtons.fire(
-                            'Cancelled',
-                            'Your data is safe :)',
-                            'error'
-                        );
                     }
                 });
             });
         });
     });
 </script>
-
+@section Scripts {
+    <partial name="_NotifictionPartial">
+}

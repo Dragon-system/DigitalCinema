@@ -8,7 +8,11 @@ namespace DigitalCinema
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<ApplicationDbContext>();
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IMovieSubImgRepository, MovieSubImgRepository>();
+            builder.Services.AddScoped<IImgesService, ImgesService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

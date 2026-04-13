@@ -8,12 +8,12 @@ namespace DigitalCinema.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly MovieService movieService;
+        private readonly ImgesService movieService;
 
         public HomeController()
         {
             _context = new ApplicationDbContext();
-            movieService = new MovieService();
+            movieService = new ImgesService();
         }
         public IActionResult Index()
         {

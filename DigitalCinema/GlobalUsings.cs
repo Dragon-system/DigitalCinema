@@ -4,3 +4,8 @@ global using Microsoft.EntityFrameworkCore;
 global using DigitalCinema.Utility;
 global using DigitalCinema.ViewModels;
 global using DigitalCinema.ViewModel;
+global using DigitalCinema.Repositories.IRepositoreis;
+global using DigitalCinema.Services.IServices;
+global using DigitalCinema.Repositories;
+global using DigitalCinema.Services;
+global using DigitalCinema.Validations;

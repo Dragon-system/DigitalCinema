@@ -1,4 +1,6 @@
-﻿<div class="container">
+﻿@model Cinema
+
+<div class="container">
     <div class="row mb-3 align-items-center my-3">
         <div class="col-md-6">
             <h2 class="display-6">Create new Cinema</h2>
@@ -7,20 +9,51 @@
 
     <div class="row my-3">
         <div class="custom-form">
+
+            <!-- ✅ Validation Summary -->
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
             <form method="post" enctype="multipart/form-data">
+
+                <!-- Name -->
                 <div class="mb-3">
-                    <label for="Name" class="form-label">Name</label>
-                    <input class="form-control" placeholder="Name" name="name">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" placeholder="Name" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
+
+                <!-- Img -->
                 <div class="mb-3">
-                    <label for="Img" class="form-label">Img</label>
+                    <label class="form-label">Img</label>
                     <input type="file" class="form-control" name="Img">
+                    <!-- ✅ Validation -->
+                    <span class="text-danger" asp-validation-for="Img"></span>
                 </div>
-                <div class="mb-3">
-                    
-                </div>
+
                 <button type="submit" class="btn-custom">Save</button>
             </form>
         </div>
     </div>
 </div>
+
+<!-- ✅ مهم جدًا -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<script>
+    document.getElementById('SubImgsInput')?.addEventListener('change', function () {
+        const container = document.getElementById('SubImgsPreview');
+        if (!container) return;
+
+        container.innerHTML = '';
+        [...this.files].forEach(file => {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'img-thumbnail';
+            img.style.width = '80px';
+            img.style.margin = '5px';
+            container.appendChild(img);
+        });
+    });
+</script>

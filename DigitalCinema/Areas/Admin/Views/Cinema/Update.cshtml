@@ -9,39 +9,56 @@
 
     <div class="row my-3">
         <div class="custom-form">
+
+            <!-- ✅ Validation Summary -->
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
             <form method="post" enctype="multipart/form-data">
+
+                <!-- Name -->
                 <div class="mb-3">
-                    <label for="Name" class="form-label">Name</label>
-                    <input class="form-control" placeholder="Name" name="Name" value="@Model.Name">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" placeholder="Name" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
+                <!-- Img -->
                 <div class="mb-3">
-                    <label for="Img" class="form-label">Img</label>
+                    <label class="form-label">Img</label>
+                    <!-- ❗ تعديل بسيط هنا -->
                     <input type="file" class="form-control" name="Img" id="Img" onchange="previewImage(event)">
+                    <span class="text-danger" asp-validation-for="Img"></span>
                 </div>
+
+                <!-- Preview -->
                 <div class="mb-3">
                     <img id="preview"
                          src="~/images/Cinema/@Model.Img"
                          alt="Current Img"
                          style="max-width: 200px; border: 1px solid #ccc; padding:5px; border-radius:10px">
                 </div>
+
                 <button type="submit" class="btn-custom">Save</button>
             </form>
         </div>
     </div>
 </div>
 
-<script>
-        function previewImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('preview');
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('preview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
             }
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 </script>
