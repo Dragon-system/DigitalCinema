@@ -1,31 +1,44 @@
 ﻿using DigitalCinema.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DigitalCinema.Areas.Admin.Controllers
 {
     [Area(SD.ADMIN_AREA)]
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ImgesService movieService;
-
-        public HomeController()
+        //private readonly ApplicationDbContext _context;
+        //private readonly ImgesService movieService;
+        private readonly IRepository<Cinema> _cinemaRepository;
+        private readonly IRepository<Actor> _actorRepository;
+        private readonly IRepository<Movie> _repository;
+        private readonly IMovieSubImgRepository _subImageRepository;
+        public HomeController(IRepository<Cinema> cinemaRepository, IRepository<Actor> actorRepository,
+            IRepository<Movie> repository, IMovieSubImgRepository subImageRepository)
         {
-            _context = new ApplicationDbContext();
-            movieService = new ImgesService();
+            _cinemaRepository = cinemaRepository;
+            _actorRepository = actorRepository;
+            _repository = repository;
+            _subImageRepository = subImageRepository;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // جلب الأعداد من قاعدة البيانات
-            ViewBag.MoviesCount = _context.Movies.Count();
-            ViewBag.CinemasCount = _context.Cinemas.Count();
-            ViewBag.ActorsCount = _context.Actors.Count();
+            var MoviesCount =  (await _repository.GetAsync()).Count();
+           var CinemasCount = (await _cinemaRepository.GetAsync()).Count();
+            var ActorsCount = (await _actorRepository.GetAsync()).Count();
 
             // إحصائية إضافية (اختياري): عدد الصور الفرعية الإجمالي
-            ViewBag.SubImgsCount = _context.SupImgs.Count();
+            var SubImgsCount =(await _subImageRepository.GetAsync()).Count();
+            return View(new MACSHomeVM
+            {
+                MoviesCount = MoviesCount,
+                CinemasCount = CinemasCount,
+                ActorsCount = ActorsCount,
+                SubImgsCount = SubImgsCount
+            });
 
-            return View();
         }
 
         public IActionResult NotFoundPage()

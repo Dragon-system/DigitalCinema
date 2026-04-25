@@ -48,7 +48,7 @@
             </div>
         </form>
     </div>
-
+</div>
     <!-- Movies Grid -->
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @if (Model.Movies.Any())
@@ -179,3 +179,10 @@
             });
         });
     </script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial">
+}

@@ -33,7 +33,12 @@
         </div>
     </div>
 </div>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial">
+}
 <script>
         function previewImage(event) {
             const input = event.target;

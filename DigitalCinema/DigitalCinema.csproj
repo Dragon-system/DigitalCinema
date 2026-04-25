@@ -10,6 +10,8 @@
     <Content Include="Validations\CustomLengthAttribute.cs" />
   </ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Mapster" Version="10.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
@@ -18,7 +20,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Areas\Customer\Controllers\" />
 	  <Folder Include="wwwroot\Images\Movie\SubImgs\" />
 	  <Folder Include="wwwroot\Images\Actor\" />
 	</ItemGroup>

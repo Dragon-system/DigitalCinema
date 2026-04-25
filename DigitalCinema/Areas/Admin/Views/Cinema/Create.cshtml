@@ -38,7 +38,10 @@
 
 <!-- ✅ مهم جدًا -->
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial">
 }
 
 <script>

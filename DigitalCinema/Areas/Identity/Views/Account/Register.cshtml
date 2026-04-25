@@ -1,0 +1,148 @@
+﻿@model RegisterVM
+@{
+    ViewData["Title"] = "إنشاء حساب جديد";
+}
+
+@* ── Background effects ── *@
+<div class="bg-blobs"></div>
+<div class="stars-layer" id="stars"></div>
+
+@* ══════════════════════ REGISTER CARD ══════════════════════ *@
+<div class="page-center">
+    <div class="login-wrapper">
+        <div class="cinema-card">
+
+            @* ── Logo ── *@
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div class="logo-name">DE Cinema</div>
+                <div class="logo-tag">انضم لعالم الرفاهية</div>
+            </div>
+
+            <div class="gold-line"></div>
+
+            <p class="form-heading">إنشاء حساب جديد ✨</p>
+            <p class="form-sub">استمتع بمزايا الحجز الحصري وأحدث العروض السينمائية</p>
+
+            @* ── Validation Summary ── *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert-cinema" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <div asp-validation-summary="ModelOnly"></div>
+                </div>
+            }
+
+            @* ══ FORM ══ *@
+            <form asp-controller="Account" asp-action="Register" method="post" id="registerForm" novalidate>
+
+                <div class="row g-3">
+                    @* ── Full Name ── *@
+                    <div class="col-md-12">
+                        <div class="input-wrap">
+                            <label asp-for="FirstName" class="field-label">الاسم الاول</label>
+                            <input asp-for="FirstName" class="cin-input"/>
+                            <i class="bi bi-person input-icon-r"></i>
+                            <span asp-validation-for="FirstName" class="field-error"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    @* ── Full Name ── *@
+                    <div class="col-md-12">
+                        <div class="input-wrap">
+                            <label asp-for="LastName" class="field-label">الاسم الثاني</label>
+                            <input asp-for="LastName" class="cin-input"/>
+                            <i class="bi bi-person input-icon-r"></i>
+                            <span asp-validation-for="LastName" class="field-error"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    @* ── Full Name ── *@
+                    <div class="col-md-12">
+                        <div class="input-wrap">
+                            <label asp-for="UserName" class="field-label">اسم المستخدم</label>
+                            <input asp-for="UserName" class="cin-input"/>
+                            <i class="bi bi-person input-icon-r"></i>
+                            <span asp-validation-for="UserName" class="field-error"></span>
+                        </div>
+                    </div>
+
+                    @* ── Email ── *@
+                    <div class="col-md-12">
+                        <div class="input-wrap">
+                            <label asp-for="Email" class="field-label"></label>
+                            <input asp-for="Email" type="email" class="cin-input"/>
+                            <i class="bi bi-envelope input-icon-r"></i>
+                            <span asp-validation-for="Email" class="field-error"></span>
+                        </div>
+                    </div>
+
+                    @* ── Password ── *@
+                    <div class="input-wrap">
+                        <label asp-for="Password" class="field-label"></label>
+                        <input asp-for="Password"
+                               type="password"
+                               class="cin-input"
+                               id="Password"
+                               placeholder="••••••••"
+                               autocomplete="current-password" />
+                        <i class="bi bi-lock input-icon-r"></i>
+                        <button type="button" class="eye-btn" onclick="togglePass()" title="إظهار / إخفاء">
+                            <i class="bi bi-eye" id="eyeIco"></i>
+                        </button>
+                        <span asp-validation-for="Password" class="field-error"></span>
+                    </div>
+
+                    <div class="input-wrap">
+                        <label asp-for="ConfirmPassword" class="field-label"></label>
+                        <input asp-for="ConfirmPassword"
+                               type="password"
+                               class="cin-input"
+                               id="Password"
+                               placeholder="••••••••"
+                               autocomplete="current-password" />
+                        <i class="bi bi-lock input-icon-r"></i>
+                        <button type="button" class="eye-btn">
+                        </button>
+                        <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                    </div>
+
+                @* ── Submit ── *@
+                <button type="submit" class="btn-cinema mt-2">
+                    <i class="bi bi-person-check me-2"></i> إنشاء الحساب الآن
+                </button>
+
+            </form>
+
+            @* ── Divider ── *@
+            <div class="or-div"><span>أو اشترك عبر الحسابات</span></div>
+
+            @* ── Social Links ── *@
+            <div class="row g-2">
+                <div class="col-6">
+                    <a asp-controller="Account" asp-action="GoogleLogin" class="btn-soc">
+                        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" /><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" /><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" /><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" /></svg>
+                        Google
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a asp-controller="Account" asp-action="FacebookLogin" class="btn-soc">
+                        <i class="bi bi-facebook" style="color:#1877f2;"></i> Facebook
+                    </a>
+                </div>
+            </div>
+
+            @* ── Login Link ── *@
+            <div class="signup-row">
+                لديك حساب بالفعل؟
+                <a asp-controller="Account" asp-action="Login">سجّل دخولك</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+

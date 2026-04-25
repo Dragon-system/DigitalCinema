@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════════════
+   login.css  –  CineMax Login Page (Optimized Wide Style)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── إعدادات الصفحة والسكرول ── */
+html, body {
+    margin: 0;
+    padding: 0;
+    /* يظهر السكرول فقط عند الحاجة (إذا كان الفورم أطول من الشاشة) */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #05050a;
+    font-family: 'Cairo', sans-serif;
+    /* لضمان التوسيط حتى لو الصفحة طولت */
+    min-height: 100vh;
+}
+
+/* ── الخلفية الثابتة ── */
+.bg-blobs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(201,168,76,.06) 0%, transparent 65%), radial-gradient(ellipse 55% 70% at 75% 20%, rgba(100,70,200,.07) 0%, transparent 65%);
+}
+
+/* ── حاوية التوسيط ── */
+.page-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center; /* توسيط عمودي */
+    justify-content: center; /* توسيط أفقي */
+    min-height: 100vh;
+    padding: 40px 20px; /* مساحة أمان عشان السكرول */
+    box-sizing: border-box;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 520px; /* جعل الفورم عريض وفخم */
+}
+
+/* ── البطاقة ── */
+.cinema-card {
+    background: #0f0f1c;
+    border: 1px solid rgba(201,168,76,.2);
+    border-radius: 24px;
+    /* بادنج متوازن (قصير من فوق وتحت وعريض من الجوانب) */
+    padding: 25px 50px 30px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 50px rgba(201,168,76,.05);
+    animation: cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ── اللوجو (بتنسيق أفقي لتوفير مساحة طولية) ── */
+.logo-area {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.logo-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #c9a84c, #8b5e1a);
+    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(201,168,76,.3);
+}
+
+    .logo-icon i {
+        font-size: 20px;
+        color: #fff;
+    }
+
+.logo-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #f0d080, #c9a84c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ── الخط الذهبي ── */
+.gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+    opacity: .25;
+    margin: 15px 0 20px;
+}
+
+/* ── العناوين ── */
+.form-heading {
+    color: #e8e8f4;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.form-sub {
+    color: #7a7a9a;
+    font-size: .8rem;
+    margin-bottom: 18px;
+}
+
+/* ── الحقول ── */
+.field-label {
+    font-size: .75rem;
+    color: #c9a84c;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+    padding-right: 5px;
+}
+
+.input-wrap {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.cin-input {
+    width: 100%;
+    background: #16162a;
+    border: 1.5px solid rgba(201,168,76,.15);
+    border-radius: 12px;
+    color: #e2e2f0;
+    font-size: .9rem;
+    padding: 10px 45px; /* الحقل نحيف وعريض */
+    outline: none;
+    transition: all .3s ease;
+}
+
+    .cin-input:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 4px rgba(201,168,76,.1);
+    }
+
+.input-icon-r {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .9rem;
+    color: #5a5a7a;
+}
+
+/* ── أزرار و روابط ── */
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    font-size: .75rem;
+}
+
+.btn-cinema {
+    width: 100%;
+    background: linear-gradient(135deg, #c9a84c, #8b5e1a);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 12px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(201,168,76,.2);
+    transition: transform .2s;
+}
+
+    .btn-cinema:hover {
+        transform: translateY(-2px);
+    }
+
+/* ── الفاصل الاجتماعي ── */
+.or-div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+    font-size: .65rem;
+    color: #5a5a7a;
+}
+
+    .or-div::before, .or-div::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,.05);
+    }
+
+.social-row {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-soc {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px;
+    background: #16162a;
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 10px;
+    color: #b0b0cc;
+    font-size: .8rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.signup-row {
+    text-align: center;
+    margin-top: 18px;
+    font-size: .8rem;
+    color: #7a7a9a;
+}
+/* ── زر إظهار/إخفاء كلمة المرور ── */
+.eye-btn {
+    position: absolute;
+    top: 50%;
+    left: 14px; /* مكانه من جهة اليسار */
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #4a4a6a; /* لون هادئ في البداية */
+    cursor: pointer;
+    font-size: .95rem;
+    z-index: 10;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease; /* تنعيم الحركة */
+}
+
+    /* تأثير عند تمرير الماوس */
+    .eye-btn:hover {
+        color: #c9a84c; /* يتغير للون الذهبي */
+        transform: translateY(-50%) scale(1.1); /* يكبر سنة بسيطة */
+        text-shadow: 0 0 8px rgba(201, 168, 76, 0.4); /* توهج ذهبي خفيف */
+    }
+
+    /* تأثير عند الضغط */
+    .eye-btn:active {
+        transform: translateY(-50%) scale(0.9); /* ينضغط للداخل */
+    }

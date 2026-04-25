@@ -9,6 +9,7 @@ namespace DigitalCinema.Services.IServices
         //string GetOldFilePath(string oldFileName, MovieImgType movieImgType = MovieImgType.MainImg);
 
          Task<string> CreateFileAsync(IFormFile file, string folder);
-        public string GetOldFilePath(string fileName, string folder);
+         string GetOldFilePath(string fileName, string folder);
+        
     }
 }

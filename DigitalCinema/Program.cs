@@ -31,7 +31,7 @@ namespace DigitalCinema
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

@@ -1,4 +1,5 @@
-﻿<div class="container-fluid py-4">
+﻿@model MACSHomeVM
+<div class="container-fluid py-4">
     <div class="row g-3 mb-3">
 
         <!-- إحصائيات الأفلام -->
@@ -8,7 +9,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h6 class="text-700 mb-1 fw-bold">Movis</h6>
-                            <div class="display-6 fw-bold text-primary">@ViewBag.MoviesCount</div>
+                            <div class="display-6 fw-bold text-primary">@Model.MoviesCount</div>
                         </div>
                         <div class="col-auto">
                             <div class="bg-soft-primary p-3 rounded-circle">
@@ -31,7 +32,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h6 class="text-700 mb-1 fw-bold">Cuont Cinemas</h6>
-                            <div class="display-6 fw-bold text-success">@ViewBag.CinemasCount</div>
+                            <div class="display-6 fw-bold text-success">@Model.CinemasCount</div>
                         </div>
                         <div class="col-auto">
                             <div class="bg-soft-success p-3 rounded-circle">
@@ -54,7 +55,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h6 class="text-700 mb-1 fw-bold">Mineu Actors</h6>
-                            <div class="display-6 fw-bold text-info">@ViewBag.ActorsCount</div>
+                            <div class="display-6 fw-bold text-info">@Model.ActorsCount</div>
                         </div>
                         <div class="col-auto">
                             <div class="bg-soft-info p-3 rounded-circle">
@@ -127,3 +128,9 @@
         background-color: rgba(245, 128, 54, 0.1);
     }
 </style>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial">
+}
