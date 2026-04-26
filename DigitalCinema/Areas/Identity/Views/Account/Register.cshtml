@@ -36,7 +36,7 @@
             }
 
             @* ══ FORM ══ *@
-            <form asp-controller="Account" asp-action="Register" method="post" id="registerForm" novalidate>
+            <form  asp-action="Register" method="post">
 
                 <div class="row g-3">
                     @* ── Full Name ── *@
@@ -45,7 +45,7 @@
                             <label asp-for="FirstName" class="field-label">الاسم الاول</label>
                             <input asp-for="FirstName" class="cin-input"/>
                             <i class="bi bi-person input-icon-r"></i>
-                            <span asp-validation-for="FirstName" class="field-error"></span>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                             <label asp-for="LastName" class="field-label">الاسم الثاني</label>
                             <input asp-for="LastName" class="cin-input"/>
                             <i class="bi bi-person input-icon-r"></i>
-                            <span asp-validation-for="LastName" class="field-error"></span>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             <label asp-for="UserName" class="field-label">اسم المستخدم</label>
                             <input asp-for="UserName" class="cin-input"/>
                             <i class="bi bi-person input-icon-r"></i>
-                            <span asp-validation-for="UserName" class="field-error"></span>
+                            <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -75,9 +75,9 @@
                     <div class="col-md-12">
                         <div class="input-wrap">
                             <label asp-for="Email" class="field-label"></label>
-                            <input asp-for="Email" type="email" class="cin-input"/>
+                            <input asp-for="Email"  class="cin-input"/>
                             <i class="bi bi-envelope input-icon-r"></i>
-                            <span asp-validation-for="Email" class="field-error"></span>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -85,30 +85,30 @@
                     <div class="input-wrap">
                         <label asp-for="Password" class="field-label"></label>
                         <input asp-for="Password"
-                               type="password"
+                             
                                class="cin-input"
                                id="Password"
-                               placeholder="••••••••"
+
                                autocomplete="current-password" />
                         <i class="bi bi-lock input-icon-r"></i>
                         <button type="button" class="eye-btn" onclick="togglePass()" title="إظهار / إخفاء">
                             <i class="bi bi-eye" id="eyeIco"></i>
                         </button>
-                        <span asp-validation-for="Password" class="field-error"></span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                     <div class="input-wrap">
                         <label asp-for="ConfirmPassword" class="field-label"></label>
                         <input asp-for="ConfirmPassword"
-                               type="password"
+                               
                                class="cin-input"
                                id="Password"
-                               placeholder="••••••••"
+                              
                                autocomplete="current-password" />
                         <i class="bi bi-lock input-icon-r"></i>
                         <button type="button" class="eye-btn">
                         </button>
-                        <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
 
                 @* ── Submit ── *@
@@ -146,3 +146,9 @@
     </div>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial" />
+}

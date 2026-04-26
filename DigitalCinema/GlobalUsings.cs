@@ -9,3 +9,4 @@ global using DigitalCinema.Services.IServices;
 global using DigitalCinema.Repositories;
 global using DigitalCinema.Services;
 global using DigitalCinema.Validations;
+global using Microsoft.AspNetCore.Identity;

@@ -1,0 +1,352 @@
+﻿@model ApplicationUserVM
+@{
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    ViewData["Title"] = "إعدادات الحساب";
+}
+
+<style>
+    .settings-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .settings-wrapper {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 780px;
+    }
+
+    .gold-card {
+        background: rgba(13, 13, 26, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(201,168,76,.35);
+        border-radius: 24px;
+        padding: 40px 50px;
+        box-shadow: 0 0 0 1px rgba(201,168,76,.08), 0 0 40px rgba(201,168,76,.12), 0 0 80px rgba(201,168,76,.06), 0 40px 80px rgba(0,0,0,.4);
+        animation: cardIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(201,168,76,.15);
+    }
+
+    .avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+        width: 75px;
+        height: 75px;
+        cursor: pointer;
+    }
+
+        .avatar-wrap img {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 2px solid rgba(201,168,76,.4);
+            box-shadow: 0 0 20px rgba(201,168,76,.2);
+            object-fit: cover;
+            display: block;
+            transition: .3s;
+        }
+
+    .avatar-overlay {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(0,0,0,.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity .3s;
+        cursor: pointer;
+    }
+
+    .avatar-wrap:hover .avatar-overlay {
+        opacity: 1;
+    }
+
+    .avatar-overlay i {
+        color: #c9a84c;
+        font-size: 1.2rem;
+    }
+
+    .avatar-badge {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 14px;
+        height: 14px;
+        background: #c9a84c;
+        border-radius: 50%;
+        border: 2px solid #0d0d1a;
+    }
+
+    .user-info .user-name {
+        color: #e8e8f4;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+
+    .user-info .user-email {
+        color: #7a7a9a;
+        font-size: .82rem;
+        margin: 0 0 8px;
+    }
+
+    .btn-upload-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(201,168,76,.1);
+        border: 1px solid rgba(201,168,76,.25);
+        border-radius: 8px;
+        color: #c9a84c;
+        font-size: .75rem;
+        font-family: 'Cairo', sans-serif;
+        padding: 5px 12px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .btn-upload-label:hover {
+            background: rgba(201,168,76,.2);
+            border-color: rgba(201,168,76,.5);
+        }
+
+    .section-title {
+        font-size: .7rem;
+        font-weight: 700;
+        color: #c9a84c;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        margin-top: 28px;
+    }
+
+    .field-label {
+        font-size: .75rem;
+        color: #c9a84c;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .cin-input {
+        width: 100%;
+        background: rgba(18, 18, 32, 0.8);
+        border: 1.5px solid rgba(201,168,76,.15);
+        border-radius: 12px;
+        color: #e2e2f0;
+        font-size: .88rem;
+        padding: 10px 16px;
+        outline: none;
+        transition: all .3s ease;
+        box-sizing: border-box;
+        font-family: 'Cairo', sans-serif;
+    }
+
+        .cin-input:focus {
+            border-color: #c9a84c;
+            box-shadow: 0 0 0 4px rgba(201,168,76,.1);
+        }
+
+        .cin-input::placeholder {
+            color: #3a3a5a;
+        }
+
+    .gold-line {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+        opacity: .2;
+        margin: 28px 0;
+    }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #c9a84c, #8b5e1a);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        padding: 11px 30px;
+        font-size: .88rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: 0 6px 20px rgba(201,168,76,.25);
+    }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(201,168,76,.35);
+        }
+
+    .btn-ghost {
+        background: transparent;
+        border: 1px solid rgba(201,168,76,.2);
+        border-radius: 12px;
+        color: #7a7a9a;
+        padding: 11px 24px;
+        font-size: .88rem;
+        font-family: 'Cairo', sans-serif;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .btn-ghost:hover {
+            border-color: rgba(201,168,76,.4);
+            color: #c9a84c;
+        }
+
+    .change-pass-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #7a7a9a;
+        font-size: .8rem;
+        text-decoration: none;
+        margin-top: 10px;
+        transition: color .2s;
+    }
+
+        .change-pass-link:hover {
+            color: #c9a84c;
+        }
+
+    .actions-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+    }
+</style>
+
+<div class="settings-page">
+    <div class="settings-wrapper">
+        <div class="gold-card">
+
+            @* ══ كل حاجة جوا الفورم ══ *@
+            <form asp-action="Update" method="post" enctype="multipart/form-data">
+
+                @* ── هيدر المستخدم ── *@
+                <div class="page-header">
+
+                    @* الأفاتار *@
+                    <div class="avatar-wrap" onclick="document.getElementById('avatarInput').click()" title="تغيير الصورة">
+                        <img id="avatarPreview"
+                             src="~/images/Profile/@Model.ImageProfile "
+                             alt="Avatar">
+                        <div class="avatar-overlay">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <div class="avatar-badge"></div>
+                    </div>
+
+                    @* ✅ الـ input جوا الفورم *@
+                    <input type="file"
+                           id="avatarInput"
+                           name="imageProfile"
+                           accept="image/*"
+                           style="display:none"
+                           onchange="previewAvatar(event)" />
+
+                    <div class="user-info">
+                        <h5 class="user-name">@(Model.FirstName + " " + Model.LastName)</h5>
+                        <p class="user-email">@Model.Email</p>
+                        <label for="avatarInput" class="btn-upload-label">
+                            <i class="bi bi-upload"></i> تغيير الصورة
+                        </label>
+                    </div>
+
+                </div>
+
+                @* ── البيانات الشخصية ── *@
+                <p class="section-title">البيانات الشخصية</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="field-label">الاسم الأول</label>
+                        <input type="text" class="cin-input" placeholder="الاسم الأول" value="@Model.FirstName" name="FirstName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="field-label">الاسم الأخير</label>
+                        <input type="text" class="cin-input" placeholder="الاسم الأخير" value="@Model.LastName" name="LastName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="field-label">البريد الإلكتروني</label>
+                        <input type="email" class="cin-input" placeholder="البريد الإلكتروني" value="@Model.Email" name="Email" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="field-label">رقم الهاتف</label>
+                        <input type="text" class="cin-input" placeholder="رقم الهاتف" value="@Model.PhoneNumber" name="PhoneNumber" />
+                    </div>
+                </div>
+
+                <div class="gold-line"></div>
+
+                <a asp-action="NewPassword" class="change-pass-link">
+                    <i class="bi bi-key"></i> تغيير كلمة المرور
+                </a>
+
+                <div class="actions-row">
+                    <button type="reset" class="btn-ghost" onclick="resetAvatar()">إلغاء</button>
+                    <button type="submit" class="btn-gold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ التغييرات
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_NotifictionPartial">
+
+        <script>
+            // الصورة الأصلية عشان نرجعلها لو الكانسل
+            const originalAvatar = document.getElementById('avatarPreview').src;
+
+            // معاينة الصورة فور اختيارها
+            function previewAvatar(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // لما يضغط إلغاء يرجع الصورة الأصلية
+            function resetAvatar() {
+                document.getElementById('avatarPreview').src = originalAvatar;
+                document.getElementById('avatarInput').value = '';
+            }
+        </script>
+}

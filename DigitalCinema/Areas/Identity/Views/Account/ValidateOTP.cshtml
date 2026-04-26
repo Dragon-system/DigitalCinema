@@ -1,0 +1,51 @@
+﻿@model ValidateOTPVM
+
+@{
+    ViewData["Title"] = "ValidateOTP";
+}
+
+<div class="container my-3">
+    @* ── Background effects ── *@
+    <div class="bg-blobs"></div>
+    <div class="stars-layer" id="stars"></div>
+
+    @* ── Logo ── *@
+    <div class="logo-area">
+        <div class="logo-icon">
+            <i class="bi bi-film"></i>
+        </div>
+        <div class="logo-name">DE Cinema</div>
+        <div class="logo-tag">تجربة السينما الفاخرة</div>
+    </div>
+
+    <div class="gold-line"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="ValidateOTP">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                <div class="form-group">
+                    <label asp-for="OTP" class="control-label"></label>
+                    <input asp-for="OTP" class="cin-input" />
+                    <span asp-validation-for="OTP" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="ForgetPassword">Back to Forget Password</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_NotifictionPartial" />
+}
