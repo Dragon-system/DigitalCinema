@@ -15,7 +15,9 @@ namespace DigitalCinema.DataAccess
         public DbSet<Actor> Actors { get; set; }
         public DbSet<SupImg> SupImgs { get; set; }
         public DbSet<ActorMovie> ActorMovies { get; set; }
-
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<ApplicationUserOTP> ApplicationUserOTPs { get; set; }

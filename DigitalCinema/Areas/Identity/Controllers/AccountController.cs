@@ -23,6 +23,11 @@ namespace DigitalCinema.Areas.Identity.Controllers
             _emailSender = emailSender;
         }
 
+
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
         public async Task<IActionResult> Logout()
         {
             await _signInManger.SignOutAsync();
@@ -60,8 +65,7 @@ namespace DigitalCinema.Areas.Identity.Controllers
             await SendConfirmationMailAsync(user);
 
             TempData["success-notification"] = "Create Account Successfully, Please Check Your email to verfiy";
-
-
+            await _userManager.AddToRoleAsync(user, SD.CUSTOMER_ROLE);
             return RedirectToAction(nameof(Login));
         }
        

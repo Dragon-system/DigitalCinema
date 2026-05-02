@@ -1,6 +1,7 @@
 ﻿using DigitalCinema.Areas.Admin.Controllers;
 using DigitalCinema.Models;
 using DigitalCinema.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -10,6 +11,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 namespace DigitalCinema.Areas.Admin.Controllers
 {
     [Area(SD.ADMIN_AREA)]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
     public class ActorController : Controller
     {
 
@@ -64,12 +66,14 @@ namespace DigitalCinema.Areas.Admin.Controllers
             });
         }
          
-        [HttpGet]  
+        [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public IActionResult Create ()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Create(Actor actor, IFormFile Img,CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -91,6 +95,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         }
          
         [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(int id)
         {
             var actor = await _actorRepository.GetOneAsync(c => c.Id == id);
@@ -100,6 +105,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
             return View(actor);
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(Actor actor, IFormFile Img, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -133,6 +139,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             var actor = await _actorRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);

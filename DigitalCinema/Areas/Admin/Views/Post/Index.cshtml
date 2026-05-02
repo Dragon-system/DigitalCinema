@@ -1,0 +1,280 @@
+﻿@model List<PostVM>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "إدارة المنشورات";
+}
+
+<style>
+    .posts-page {
+        padding: 40px 20px;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .posts-wrapper {
+        max-width: 780px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #e8e8f4;
+    }
+
+        .page-title span {
+            color: #c9a84c;
+        }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #c9a84c, #8b5e1a);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        padding: 10px 22px;
+        font-size: .85rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: 0 6px 20px rgba(201,168,76,.25);
+    }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+    /* ── البوست ── */
+    .post-card {
+        background: rgba(13, 13, 26, 0.85);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(201,168,76,.2);
+        border-radius: 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        animation: cardIn .4s cubic-bezier(.22,1,.36,1) both;
+        transition: border-color .3s;
+    }
+
+        .post-card:hover {
+            border-color: rgba(201,168,76,.4);
+        }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .post-body {
+        padding: 20px 24px;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(201,168,76,.08);
+    }
+
+    .post-author-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .post-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid rgba(201,168,76,.3);
+    }
+
+    .post-author {
+        font-size: .88rem;
+        font-weight: 700;
+        color: #e8e8f4;
+    }
+
+    .post-date {
+        font-size: .72rem;
+        color: #5a5a7a;
+    }
+
+    .post-content {
+        padding: 10px 18px;
+        color: #c8c8e0;
+        font-size: .9rem;
+        line-height: 1.7;
+    }
+
+
+    /* ✅ الصح */
+    .post-media {
+        padding: 0 24px 16px;
+        display: flex;
+        justify-content: center;
+    }
+
+        .post-media img, .post-media video {
+            width: 60%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+            border: 1px solid rgba(201,168,76,.15);
+        }
+
+    /* ── إحصائيات ── */
+    .post-stats {
+        display: flex;
+        gap: 16px;
+        padding: 10px 24px;
+        border-top: 1px solid rgba(201,168,76,.08);
+        font-size: .78rem;
+        color: #7a7a9a;
+    }
+
+        .post-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-stats i {
+            color: #c9a84c;
+        }
+
+    /* ── زر الحذف ── */
+    .btn-delete {
+        background: rgba(255,107,107,.1);
+        border: 1px solid rgba(255,107,107,.2);
+        border-radius: 8px;
+        color: #ff6b6b;
+        padding: 6px 14px;
+        font-size: .78rem;
+        font-family: 'Cairo', sans-serif;
+        cursor: pointer;
+        transition: .2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .btn-delete:hover {
+            background: rgba(255,107,107,.2);
+            border-color: rgba(255,107,107,.4);
+        }
+
+    /* مفيش بوستات */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #5a5a7a;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: rgba(201,168,76,.3);
+            margin-bottom: 16px;
+            display: block;
+        }
+</style>
+
+<div class="posts-page">
+    <div class="posts-wrapper">
+        @if (User.IsInRole(SD.SUPER_ADMIN_ROLE) || User.IsInRole(SD.ADMIN_ROLE))
+        {
+            <div class="page-header">
+                <p class="page-title"><i class="bi bi-megaphone me-2" style="color:#c9a84c"></i>إدارة <span>المنشورات</span></p>
+            <a asp-area="Admin" asp-controller="Post" asp-action="Create" class="btn-gold">
+                <i class="bi bi-plus-lg"></i> منشور جديد
+            </a>
+        </div>
+        }
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-camera-reels"></i>
+                <p>لا توجد منشورات حتى الآن</p>
+            </div>
+        }
+
+        @foreach (var post in Model)
+        {
+            <div class="post-card">
+                <div class="post-body">
+                    <div class="post-header">
+                        <div class="post-author-wrap">
+                            <img class="post-avatar"
+                                 src="@(string.IsNullOrEmpty(post.AuthorImage) ? "https://bootdey.com/img/Content/avatar/avatar7.png" : $"/images/Profile/{post.AuthorImage}")"
+                                 alt="avatar" />
+                            <div>
+                                <div class="post-author">@post.AuthorName</div>
+                                <div class="post-date">@post.CreatedAt.ToString("dd/MM/yyyy - hh:mm tt")</div>
+                            </div>
+                        </div>
+                        @if (User.IsInRole(SD.SUPER_ADMIN_ROLE) || User.IsInRole(SD.ADMIN_ROLE))
+                        {
+                            @* زر الحذف *@
+                            <form asp-action="Delete" asp-route-id="@post.Id" method="post">
+                                <button type="submit" class="btn-delete">
+                                    <i class="bi bi-trash"></i> حذف
+                                </button>
+                            </form>
+                        }
+                    </div>
+                    <div class="post-content">@post.Content</div>
+
+                </div>
+                @if (User.IsInRole(SD.SUPER_ADMIN_ROLE) || User.IsInRole(SD.ADMIN_ROLE))
+                {
+                    @if (!string.IsNullOrEmpty(post.ImagePath))
+                    {
+                        <div class="post-media">
+                            <img src="/images/PostImages/@post.ImagePath" alt="post image" style="width:70%; max-height:280px; object-fit:cover; border-radius:12px; display:block; margin:0 auto;" />
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(post.VideoPath))
+                    {
+                        <div class="post-media">
+                            <video controls src="/images/PostVideos/@post.VideoPath" style="width:70%; max-height:280px; border-radius:12px; display:block; margin:0 auto;"></video>
+                        </div>
+                    }
+                }
+                <div class="post-stats">
+                    <span><i class="bi bi-heart-fill"></i> @post.LikesCount لايك</span>
+                    <span><i class="bi bi-chat-fill"></i> @post.Comments.Count تعليق</span>
+                </div>
+                
+            </div>
+        }
+
+                
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_NotifictionPartial">
+}

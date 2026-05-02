@@ -1,4 +1,5 @@
 ﻿using DigitalCinema.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 namespace DigitalCinema.Areas.Admin.Controllers
 {
     [Area(SD.ADMIN_AREA)]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
     public class CinemaController : Controller
     {
 
@@ -63,12 +65,14 @@ namespace DigitalCinema.Areas.Admin.Controllers
             });
         }
          
-        [HttpGet]  
+        [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public IActionResult Create ()
         {
             return View(new Cinema());
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Create(Cinema cinema, IFormFile Img, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -90,6 +94,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         }
          
         [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(int id, CancellationToken cancellationToken = default)
         {
             var cinema =await _cinemaRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
@@ -99,6 +104,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
             return View(cinema);
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(Cinema cinema, IFormFile Img, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -133,6 +139,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             var cinema =await _cinemaRepository.GetOneAsync(e=>e.Id == id ,cancellationToken: cancellationToken);

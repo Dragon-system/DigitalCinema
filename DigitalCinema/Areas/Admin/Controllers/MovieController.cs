@@ -3,7 +3,7 @@ using DigitalCinema.Models;
 using DigitalCinema.Services;
 using DigitalCinema.ViewModel;
 using DigitalCinema.ViewModels;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace DigitalCinema.Areas.Admin.Controllers
 {
     [Area(SD.ADMIN_AREA)]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
     public class MovieController : Controller
     {
         // ===================== Repositories =====================
@@ -107,6 +108,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         }
         // صفحة عرض إنشاء قسم جديد
         [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Create(CancellationToken cancellationToken = default)
         {
             var categories = await _categoryRepository.GetAsync(cancellationToken: cancellationToken);
@@ -124,6 +126,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         // صفحة إنشاء قسم جديد
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Create(Movie Movie, IFormFile Img, List<IFormFile>? SubImgs, List<int>? selectedActorIds, CancellationToken cancellationToken = default)
         {
             if (Movie == null) return RedirectToAction(nameof(HomeController.NotFoundPage), SD.HOME_CONTROLLER);
@@ -179,6 +182,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
 
         // ميثود عرض صفحة التعديل (HttpGet) - أضف هذا الجزء
         [HttpGet]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(int id, CancellationToken cancellationToken = default)
         {
             //var movie = _context.Movies.Find(id);
@@ -210,6 +214,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         // صفحة تعديل قسم
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Update(Movie Movie, IFormFile? Img, List<IFormFile>? SubImgs, List<int>? selectedActorIds, CancellationToken cancellationToken = default)
         {
            
@@ -293,7 +298,7 @@ namespace DigitalCinema.Areas.Admin.Controllers
         }
 
 
-
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             var category =await _repository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
