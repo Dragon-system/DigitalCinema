@@ -11,11 +11,8 @@ namespace DigitalCinema.Repositories
         
         }
         public void DeleteRange(IEnumerable<SupImg> movieSubImg)
-        {
-            foreach (var item in movieSubImg)
-            {
-                _context.SupImgs.Remove(item);
-            }
-        }
+              =>_context.SupImgs.RemoveRange(movieSubImg);
+            
+        
     }
 }

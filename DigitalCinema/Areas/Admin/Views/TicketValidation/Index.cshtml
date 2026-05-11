@@ -1,0 +1,76 @@
+﻿@model DigitalCinema.ViewModel.TicketCheckResultVM
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-qr-code-scan"></i> Ticket Entry Confirmation System</h4>
+                </div>
+                <div class="card-body p-5">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Enter the ticket code (8 digits)</label>
+                        <input type="text" id="ticketCode" class="form-control form-control-lg text-center fw-bold text-uppercase"
+                               placeholder="EX: A1B2C3D4" maxlength="8" style="letter-spacing: 2px;">
+                    </div>
+                    <button onclick="validateTicket()" class="btn btn-primary btn-lg w-100 shadow-sm">
+                        <i class="bi bi-shield-check"></i> Check and confirm login
+                    </button>
+
+                    <div id="resultArea" class="mt-4" style="display:none;">
+                        <!-- النتيجة ستظهر هنا ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function validateTicket() {
+            const code = document.getElementById('ticketCode').value;
+            const resultArea = document.getElementById('resultArea');
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            if (!code) return;
+
+            fetch('/Admin/TicketValidation/ValidateTicket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: `ticketCode=${code}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                resultArea.style.display = 'block';
+                let content = '';
+
+                if (data.isValid) {
+                    content = `
+                        <div class="alert alert-success shadow-sm">
+                            <h5 class="alert-heading fw-bold"><i class="bi bi-check-circle-fill"></i> ${data.message}</h5>
+                            <hr>
+                            <p class="mb-1"><strong>الفيلم:</strong> ${data.movieName}</p>
+                            <p class="mb-1"><strong>الكرسي:</strong> ${data.seatNumber}</p>
+                            <p class="mb-0"><strong>العميل:</strong> ${data.customerName}</p>
+                        </div>`;
+                    document.getElementById('ticketCode').value = '';
+                } else if (data.alreadyUsed) {
+                    content = `
+                        <div class="alert alert-warning shadow-sm">
+                            <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill"></i> تذكرة مستخدمة!</h5>
+                            <p class="mb-0">${data.message}</p>
+                            <small class="d-block mt-2">توقيت الدخول السابق: ${data.usedAt}</small>
+                        </div>`;
+                } else {
+                    content = `<div class="alert alert-danger shadow-sm"><i class="bi bi-x-circle-fill"></i> ${data.message}</div>`;
+                }
+                resultArea.innerHTML = content;
+            });
+        }
+    </script>
+}

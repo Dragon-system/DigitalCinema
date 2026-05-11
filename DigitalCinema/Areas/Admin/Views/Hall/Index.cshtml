@@ -1,0 +1,119 @@
+﻿@model DigitalCinema.ViewModel.FultterShow_HallVM
+
+<div class="container mt-5">
+    @* --- الرأس --- *@
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white shadow-sm rounded border-right border-primary border-4">
+        <div>
+            <h2 class="text-primary mb-0"><i class="bi bi-layout-text-window-reverse"></i> لوحة تحكم السينما</h2>
+            <small class="text-muted">إدارة القاعات والمواعيد والتحقق من الحضور</small>
+        </div>
+        <div class="btn-group shadow-sm">
+            <a asp-controller="TicketValidation" asp-action="Index" class="btn btn-dark"><i class="bi bi-qr-code-scan"></i> بوابة الدخول</a>
+            <a asp-action="CreateHall" class="btn btn-success"><i class="bi bi-plus-circle"></i> قاعة جديدة</a>
+            <a asp-action="CreateShow" class="btn btn-primary"><i class="bi bi-film"></i> عرض جديد</a>
+        </div>
+    </div>
+
+    @* --- جدول القاعات --- *@
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between">
+            <span><i class="bi bi-door-open"></i> القاعات المتاحة</span>
+            <span class="badge bg-secondary">@Model.Halls?.Count() قاعة</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>اسم القاعة</th>
+                        <th>السعة (مقعد)</th>
+                        <th>التحكم</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var hall in Model.Halls ?? Enumerable.Empty<Hall>())
+                    {
+                        <tr>
+                            <td class="fw-bold">@hall.Name</td>
+                            <td><span class="badge rounded-pill bg-info text-dark px-3">@hall.Row?.Count مقعد</span></td>
+                            <td>
+                                <form asp-action="DeleteHall" asp-route-id="@hall.Id" method="post" onsubmit="return confirm('حذف القاعة سيحذف كل العروض المرتبطة بها! استمرار؟')">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm border-0"><i class="bi bi-trash3"></i> حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* --- جدول المواعيد التفصيلي --- *@
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-bold"><i class="bi bi-calendar-check"></i> جدول تشغيل العروض</div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>الفيلم والقاعة</th>
+                        <th>التاريخ والوقت</th>
+                        <th>السعر</th>
+                        <th class="text-center">التحكم والتقارير</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var smh in Model.ShowMovieHalls ?? Enumerable.Empty<ShowMovieHall>())
+                    {
+                        @foreach (var show in smh.Shows ?? Enumerable.Empty<Show>())
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">@smh.Movie?.Name</div>
+                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> @smh.Hall?.Name</small>
+                                </td>
+                                <td>
+                                    <div class="text-primary fw-bold">@show.StartTime.ToString("dd/MM/yyyy")</div>
+                                    <small class="badge bg-light text-dark border">@show.StartTime.ToString("hh:mm tt")</small>
+                                </td>
+                                <td><span class="text-success fw-bold">@show.TicketPrice.ToString("N2") ج.م</span></td>
+                                <td class="text-center">
+                                    <div class="btn-group shadow-sm border rounded overflow-hidden">
+                                        @* زرار الكراسي *@
+                                        <a asp-action="ShowDetails" asp-route-id="@show.Id" class="btn btn-sm btn-white text-primary border-end" title="عرض خريطة الكراسي">
+                                            <i class="bi bi-grid-3x3-gap"></i> الكراسي
+                                        </a>
+
+                                        @* الزرار الجديد: تقرير الحضور *@
+                                        <a asp-controller="TicketValidation" asp-action="AttendanceReport" asp-route-showId="@show.Id" class="btn btn-sm btn-white text-info border-end" title="كشف الحضور">
+                                            <i class="bi bi-people"></i> الحضور
+                                        </a>
+
+                                        @* زرار الحذف *@
+                                        <form asp-action="DeleteShow" asp-route-id="@show.Id" method="post"
+                                              onsubmit="return confirm('حذف العرض سيؤدي لإلغاء جميع التذاكر المحجوزة، استمرار؟')" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-white text-danger">
+                                                <i class="bi bi-trash"></i> حذف
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    @if (!Model.ShowMovieHalls.Any() || !Model.ShowMovieHalls.SelectMany(s => s.Shows).Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox d-block mb-2 fs-2"></i>
+                                لا توجد مواعيد عرض مسجلة حالياً.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://jsdelivr.net">
+}

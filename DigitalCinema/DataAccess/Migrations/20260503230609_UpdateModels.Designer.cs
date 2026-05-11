@@ -4,6 +4,7 @@ using DigitalCinema.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalCinema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260503230609_UpdateModels")]
+    partial class UpdateModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,75 +342,6 @@ namespace DigitalCinema.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("DigitalCinema.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OrderStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaymentMthod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShowId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ShowId");
-
-                    b.ToTable("OrderItems");
-                });
-
             modelBuilder.Entity("DigitalCinema.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -534,9 +468,6 @@ namespace DigitalCinema.Migrations
                     b.Property<int?>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShowMovieHallId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -548,8 +479,6 @@ namespace DigitalCinema.Migrations
                     b.HasIndex("HallId");
 
                     b.HasIndex("MovieId");
-
-                    b.HasIndex("ShowMovieHallId");
 
                     b.ToTable("Shows");
                 });
@@ -623,39 +552,6 @@ namespace DigitalCinema.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("SupImgs");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.Ticket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ShowSeatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TicketCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UsedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("ShowSeatId");
-
-                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -843,7 +739,7 @@ namespace DigitalCinema.Migrations
             modelBuilder.Entity("DigitalCinema.Models.BookingSeat", b =>
                 {
                     b.HasOne("DigitalCinema.Models.Booking", "Booking")
-                        .WithMany()
+                        .WithMany("BookingSeats")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -874,36 +770,6 @@ namespace DigitalCinema.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Cinema");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.Order", b =>
-                {
-                    b.HasOne("DigitalCinema.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.OrderItem", b =>
-                {
-                    b.HasOne("DigitalCinema.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DigitalCinema.Models.Show", "Show")
-                        .WithMany()
-                        .HasForeignKey("ShowId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Show");
                 });
 
             modelBuilder.Entity("DigitalCinema.Models.Post", b =>
@@ -975,14 +841,6 @@ namespace DigitalCinema.Migrations
                     b.HasOne("DigitalCinema.Models.Movie", null)
                         .WithMany("Shows")
                         .HasForeignKey("MovieId");
-
-                    b.HasOne("DigitalCinema.Models.ShowMovieHall", "ShowMovieHall")
-                        .WithMany("Shows")
-                        .HasForeignKey("ShowMovieHallId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShowMovieHall");
                 });
 
             modelBuilder.Entity("DigitalCinema.Models.ShowMovieHall", b =>
@@ -990,7 +848,7 @@ namespace DigitalCinema.Migrations
                     b.HasOne("DigitalCinema.Models.Hall", "Hall")
                         .WithMany()
                         .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DigitalCinema.Models.Movie", "Movie")
@@ -1013,7 +871,7 @@ namespace DigitalCinema.Migrations
                         .IsRequired();
 
                     b.HasOne("DigitalCinema.Models.Show", "Show")
-                        .WithMany("ShowSeats")
+                        .WithMany()
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1032,25 +890,6 @@ namespace DigitalCinema.Migrations
                         .IsRequired();
 
                     b.Navigation("movie");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.Ticket", b =>
-                {
-                    b.HasOne("DigitalCinema.Models.Booking", "Booking")
-                        .WithMany("Tickets")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DigitalCinema.Models.ShowSeat", "ShowSeat")
-                        .WithMany()
-                        .HasForeignKey("ShowSeatId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("ShowSeat");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1115,7 +954,7 @@ namespace DigitalCinema.Migrations
 
             modelBuilder.Entity("DigitalCinema.Models.Booking", b =>
                 {
-                    b.Navigation("Tickets");
+                    b.Navigation("BookingSeats");
                 });
 
             modelBuilder.Entity("DigitalCinema.Models.Category", b =>
@@ -1147,16 +986,6 @@ namespace DigitalCinema.Migrations
                     b.Navigation("PostComments");
 
                     b.Navigation("PostLikes");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.Show", b =>
-                {
-                    b.Navigation("ShowSeats");
-                });
-
-            modelBuilder.Entity("DigitalCinema.Models.ShowMovieHall", b =>
-                {
-                    b.Navigation("Shows");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,62 @@
+﻿@model DigitalCinema.ViewModel.CreateShowVM
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">إضافة عرض جديد</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateShow" method="post">
+                <div class="row">
+                    <!-- اختيار الفيلم -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MovieId" class="form-label fw-bold">الفيلم</label>
+                        <select asp-for="MovieId" class="form-select"
+                                asp-items="@(new SelectList(Model.Movies, "Id", "Name"))">
+                            <option value="">-- اختر الفيلم --</option>
+                        </select>
+                        <span asp-validation-for="MovieId" class="text-danger"></span>
+                    </div>
+
+                    <!-- اختيار القاعة -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="HallId" class="form-label fw-bold">القاعة</label>
+                        <select asp-for="HallId" class="form-select"
+                                asp-items="@(new SelectList(Model.Halls, "Id", "Name"))">
+                            <option value="">-- اختر القاعة --</option>
+                        </select>
+                        <span asp-validation-for="HallId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- حقل التاريخ -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">تاريخ العرض</label>
+                        <input type="date" name="onlyDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    </div>
+
+                    <!-- حقل الوقت (اللي إنت محتاجه) -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">ساعة العرض</label>
+                        <input type="time" name="onlyTime" class="form-control" required />
+                    </div>
+
+                    <!-- سعر التذكرة -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="TicketPrice" class="form-label fw-bold">سعر التذكرة</label>
+                        <div class="input-group">
+                            <span class="input-group-text">ج.م</span>
+                            <input asp-for="TicketPrice" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 text-end">
+                    <a asp-action="Index" class="btn btn-light px-4">إلغاء</a>
+                    <button type="submit" class="btn btn-primary px-5">حفظ العرض</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

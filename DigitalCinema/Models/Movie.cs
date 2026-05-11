@@ -13,7 +13,7 @@ namespace DigitalCinema.Models
         public string MainImg { get; set; } = string.Empty;
       
         public decimal Price { get; set; }
-       
+    
         public DateTime ShowTime { get; set; } = DateTime.Now;
 
         public int CategoryId { get; set; }
@@ -23,6 +23,7 @@ namespace DigitalCinema.Models
         public int CinemaId { get; set; }
         public Cinema Cinema { get; set; } = null!;
 
+        public ICollection<Show> Shows { get; set; } = new List<Show>();
         public List<ActorMovie> ActorMovies { get; set; } = new();
     }
 }

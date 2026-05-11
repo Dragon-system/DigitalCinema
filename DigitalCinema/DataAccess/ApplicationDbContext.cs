@@ -6,11 +6,23 @@ using Microsoft.EntityFrameworkCore;
 namespace DigitalCinema.DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems{ get; set; }
+        public DbSet<Show> Shows { get; set; }
+        public DbSet<ShowMovieHall> ShowMovieHalls { get; set; }
+        public DbSet<ShowSeat> ShowSeats { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        
+        public DbSet<Seat> Seats { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingSeat> BookingSeats { get; set; }
+        public DbSet<Hall> Halls { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Actor> Actors { get; set; }
         public DbSet<SupImg> SupImgs { get; set; }
@@ -29,6 +41,33 @@ namespace DigitalCinema.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ShowMovieHall>()
+                .HasOne(smh => smh.Hall)
+                .WithMany() // أو حسب العلاقة في موديل الـ Hall
+                .HasForeignKey(smh => smh.HallId)
+                .OnDelete(DeleteBehavior.Restrict); // هذا سيحل أي تعارض في مسارات الحذف
+
+            modelBuilder.Entity<Ticket>()
+       .HasOne(t => t.Booking)
+       .WithMany(b => b.Tickets)
+       .HasForeignKey(t => t.BookingId)
+       .OnDelete(DeleteBehavior.Cascade);
+
+            // حماية للـ ShowSeat: لو التذكرة موجودة، ممنوع نمسح سجل كرسي العرض
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.ShowSeat)
+                .WithMany()
+                .HasForeignKey(t => t.ShowSeatId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(o => o.Show)
+                .WithMany()
+                .HasForeignKey(o => o.ShowId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MovieEntityTypeConfiguration).Assembly);
         }
     }

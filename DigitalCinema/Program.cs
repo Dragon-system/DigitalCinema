@@ -3,6 +3,7 @@ using DigitalCinema.Utility;
 using DigitalCinema.Utility.DbInitializers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 namespace DigitalCinema
 {
@@ -41,19 +42,33 @@ namespace DigitalCinema
             });
 
 
+            builder.Services.AddScoped<IRepository<Ticket>, Repository<Ticket>>();
+            builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
+            builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
+            builder.Services.AddScoped<IRepository<Booking>, Repository<Booking>>();
+            builder.Services.AddScoped<IRepository<Hall>, Repository<Hall>>();
+            builder.Services.AddScoped<IRepository<ShowSeat>, Repository<ShowSeat>>();
+            builder.Services.AddScoped<IRepository<Seat>, Repository<Seat>>();
             builder.Services.AddScoped<IRepository<Movie>, Repository<Movie>>();
+            builder.Services.AddScoped<IRepository<Show>, Repository<Show>>();
+            builder.Services.AddScoped<IRepository<ShowMovieHall>, Repository<ShowMovieHall>>();
             builder.Services.AddScoped<IRepository<Cinema>, Repository<Cinema>>();
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
             builder.Services.AddScoped<IRepository<Actor>, Repository<Actor>>();
+            builder.Services.AddScoped<IRepository<SupImg>, Repository<SupImg>>();
             builder.Services.AddScoped<IRepository<Post>, Repository<Post>>();
             builder.Services.AddScoped<IRepository<PostComment>, Repository<PostComment>>();
             builder.Services.AddScoped<IRepository<PostLike>, Repository<PostLike>>();
             builder.Services.AddScoped<IMovieSubImgRepository, MovieSubImgRepository>();
             builder.Services.AddScoped<IRepository<ActorMovie>, Repository<ActorMovie>>();
             builder.Services.AddScoped<IImgesService, ImgesService>();
+            builder.Services.AddScoped<IBockingRepository, BockingRepository>();
             builder.Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             var app = builder.Build();
           

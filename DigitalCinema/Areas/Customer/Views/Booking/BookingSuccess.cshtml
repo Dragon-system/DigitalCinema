@@ -1,0 +1,112 @@
+﻿@model DigitalCinema.Models.Booking
+
+<div class="container mb-5" style="padding-top: 100px;">
+    <div class="text-center mb-5">
+        <div class="display-4 text-success"><i class="bi bi-check-circle-fill"></i></div>
+        <h2 class="fw-bold">Booking Successful!</h2>
+        <p class="text-muted">Enjoy the show, here are your digital ticket details</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- كارت ملخص الحجز -->
+            <div class="card shadow-sm border-0 mb-4 bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Movie</small>
+                            <h5 class="fw-bold">@Model.Show.ShowMovieHall.Movie.Name</h5>
+                        </div>
+                        <div class="col-sm-6 text-sm-end">
+                            <small class="text-muted d-block">Booking Number</small>
+                            <h5 class="fw-bold text-primary">#@Model.BookingCode</h5>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <small class="text-muted d-block">Hall Name</small>
+                            <p class="fw-bold">@Model.Show.ShowMovieHall.Hall.Name</p>
+                        </div>
+                        <div class="col-sm-4 text-center">
+                            <small class="text-muted d-block">Date & Time</small>
+                            <p class="fw-bold">@Model.Show.StartTime.ToString("dd MMM yyyy - وقت بدء العرض HH:mm")</p>
+                        </div>
+                        <div class="col-sm-4 text-end">
+                            <small class="text-muted d-block">Total Amount</small>
+                            <p class="fw-bold text-success">@Model.TotalPrice.ToString("C")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- التذاكر -->
+            <h5 class="mb-3 fw-bold">
+                <i class="bi bi-ticket-perforated"></i>
+                Tickets (@ViewBag.Tickets.Count)
+            </h5>
+
+            @foreach (var ticket in (IEnumerable<DigitalCinema.Models.Ticket>)ViewBag.Tickets)
+            {
+                <div class="ticket-card mb-3 shadow-sm d-flex">
+                    <div class="ticket-left p-3 bg-primary text-white text-center d-flex flex-column justify-content-center">
+                        <small>Seat</small>
+                        <h3 class="mb-0 fw-bold">@ticket.ShowSeat.Seat.SeatNumber</h3>
+                    </div>
+                    <div class="ticket-right p-3 bg-white flex-grow-1 border-start border-3 border-dashed border-primary">
+                        <div class="d-flex justify-content-between align-items-center h-100">
+                            <div>
+                                <small class="text-muted d-block">Verification Code</small>
+                                <h4 class="text-dark fw-bold mb-0">@ticket.TicketCode</h4>
+                            </div>
+                            <div class="text-center p-2 bg-light rounded">
+                                <i class="bi bi-qr-code fs-1 text-dark"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                <button onclick="window.print()" class="btn btn-outline-dark">
+                    <i class="bi bi-printer"></i> Print Tickets
+                </button>
+                <a asp-area="Customer" asp-controller="Home" asp-action="Index"
+                   class="btn btn-primary px-4">
+                    <i class="bi bi-house"></i> Back to Home
+                </a>
+                <a asp-area="Customer" asp-controller="Booking" asp-action="MyHistory"
+                   class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-clock-history"></i> My Bookings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ticket-card {
+        border-radius: 15px;
+        overflow: hidden;
+        min-height: 100px;
+    }
+
+    .ticket-left {
+        min-width: 100px;
+    }
+
+    .border-dashed {
+        border-style: dashed !important;
+    }
+
+    @@media print {
+        nav, .btn, header, footer {
+            display: none !important;
+        }
+
+        .ticket-card {
+            break-inside: avoid;
+            border: 1px solid #ccc;
+        }
+    }
+</style>

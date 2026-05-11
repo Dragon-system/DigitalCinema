@@ -1,0 +1,997 @@
+﻿@model IEnumerable<DigitalCinema.ViewModel.UserBookingHistoryVM>
+
+@{
+    ViewData["Title"] = "Booking History";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@@700;800&family=Plus+Jakarta+Sans:wght@@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bh-bg: #0b0d12;
+        --bh-card: #13161f;
+        --bh-card-hover: #191d29;
+        --bh-border: rgba(255,255,255,0.07);
+        --bh-gold: #f0b429;
+        --bh-gold-dim: rgba(240,180,41,0.12);
+        --bh-teal: #22d3b8;
+        --bh-red: #f04e65;
+        --bh-red-dim: rgba(240,78,101,0.13);
+        --bh-green: #22d472;
+        --bh-green-dim: rgba(34,212,114,0.13);
+        --bh-blue: #3d8ef8;
+        --bh-blue-dim: rgba(61,142,248,0.13);
+        --bh-text: #eaeff8;
+        --bh-text-soft: #c2c9db;
+        --bh-muted: #636b85;
+        --bh-font-display: 'Playfair Display', Georgia, serif;
+        --bh-font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --bh-radius: 18px;
+        --bh-radius-sm: 11px;
+    }
+
+    /* ── Base ── */
+    .bh-page {
+        min-height: 100vh;
+        background: var(--bh-bg);
+        font-family: var(--bh-font-body);
+        color: var(--bh-text);
+        position: relative;
+        overflow-x: hidden;
+    }
+
+        /* Subtle vignette */
+        .bh-page::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(61,142,248,0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+    .bh-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .bh-bg-reel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 22px;
+        background: repeating-linear-gradient( 180deg, transparent 0px, transparent 12px, rgba(255,255,255,0.025) 12px, rgba(255,255,255,0.025) 24px );
+    }
+
+    .bh-bg-reel--left {
+        left: 0;
+    }
+
+    .bh-bg-reel--right {
+        right: 0;
+    }
+
+    .bh-container {
+        position: relative;
+        z-index: 1;
+        padding-top: 108px;
+        padding-bottom: 90px;
+    }
+
+    /* ── Header ── */
+    .bh-header {
+        margin-bottom: 32px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--bh-border);
+    }
+
+    /* Top row: title + badge */
+    .bh-header__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 22px;
+    }
+
+    .bh-header__eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--bh-font-body);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 3.5px;
+        color: var(--bh-gold);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+        .bh-header__eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 2px;
+            background: var(--bh-gold);
+            border-radius: 2px;
+        }
+
+    .bh-header__title {
+        font-family: var(--bh-font-display);
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        color: var(--bh-text);
+        margin: 0;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+        .bh-header__title em {
+            font-style: italic;
+            color: var(--bh-gold);
+        }
+
+    /* Badge */
+    .bh-header__badge {
+        background: var(--bh-gold-dim);
+        border: 1px solid rgba(240,180,41,0.25);
+        border-radius: 14px;
+        padding: 14px 24px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .bh-badge-count {
+        display: block;
+        font-family: var(--bh-font-display);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--bh-gold);
+        line-height: 1;
+    }
+
+    .bh-badge-label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--bh-muted);
+        margin-top: 4px;
+    }
+
+    /* ── Controls row (search + filter) ── */
+    .bh-controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .bh-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+    }
+
+        .bh-search-wrap svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--bh-muted);
+            pointer-events: none;
+            width: 16px;
+            height: 16px;
+        }
+
+    .bh-search {
+        width: 100%;
+        background: var(--bh-card);
+        border: 1px solid var(--bh-border);
+        border-radius: var(--bh-radius-sm);
+        padding: 11px 14px 11px 40px;
+        color: var(--bh-text);
+        font-family: var(--bh-font-body);
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .bh-search::placeholder {
+            color: var(--bh-muted);
+        }
+
+        .bh-search:focus {
+            border-color: rgba(61,142,248,0.5);
+            box-shadow: 0 0 0 3px rgba(61,142,248,0.1);
+        }
+
+    /* Filter pills */
+    .bh-filters {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .bh-filter-btn {
+        background: var(--bh-card);
+        border: 1px solid var(--bh-border);
+        border-radius: 50px;
+        padding: 9px 18px;
+        font-family: var(--bh-font-body);
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--bh-muted);
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+    }
+
+        .bh-filter-btn:hover {
+            border-color: rgba(255,255,255,0.15);
+            color: var(--bh-text);
+        }
+
+        .bh-filter-btn.active {
+            background: var(--bh-blue-dim);
+            border-color: rgba(61,142,248,0.4);
+            color: var(--bh-blue);
+        }
+
+        .bh-filter-btn.active-green {
+            background: var(--bh-green-dim);
+            border-color: rgba(34,212,114,0.4);
+            color: var(--bh-green);
+        }
+
+        .bh-filter-btn.active-muted {
+            background: rgba(120,120,140,0.12);
+            border-color: rgba(120,120,140,0.3);
+            color: var(--bh-text-soft);
+        }
+
+    /* No results from filter */
+    .bh-no-results {
+        display: none;
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--bh-muted);
+        font-size: 0.95rem;
+        grid-column: 1 / -1;
+    }
+
+    /* ── Alert ── */
+    .bh-alert {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        border-radius: var(--bh-radius-sm);
+        margin-bottom: 28px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .bh-alert--success {
+        background: var(--bh-green-dim);
+        border: 1px solid rgba(34,212,114,0.25);
+        color: var(--bh-green);
+    }
+
+    .bh-alert__close {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.2rem;
+        cursor: pointer;
+        opacity: 0.6;
+        padding: 0 2px;
+        line-height: 1;
+        transition: opacity 0.15s;
+    }
+
+        .bh-alert__close:hover {
+            opacity: 1;
+        }
+
+    /* ── Empty state ── */
+    .bh-empty {
+        text-align: center;
+        padding: 80px 40px;
+        background: var(--bh-card);
+        border: 1px solid var(--bh-border);
+        border-radius: var(--bh-radius);
+    }
+
+    .bh-empty__icon {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .bh-empty__title {
+        font-family: var(--bh-font-display);
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        letter-spacing: -0.01em;
+    }
+
+    .bh-empty__text {
+        color: var(--bh-muted);
+        max-width: 340px;
+        margin: 0 auto 28px;
+        line-height: 1.65;
+        font-size: 0.9rem;
+    }
+
+    /* ── Grid ── */
+    .bh-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    /* ── Card ── */
+    .bh-card {
+        background: var(--bh-card);
+        border: 1px solid var(--bh-border);
+        border-radius: var(--bh-radius);
+        overflow: hidden;
+        transition: transform 0.26s ease, box-shadow 0.26s ease, background 0.26s ease;
+        animation: cardEnter 0.45s ease both;
+    }
+
+    @@keyframes cardEnter {
+        from {
+            opacity: 0;
+            transform: translateY(22px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bh-card:hover {
+        transform: translateY(-5px);
+        background: var(--bh-card-hover);
+        box-shadow: 0 20px 44px rgba(0,0,0,0.45);
+    }
+
+    .bh-card__stripe {
+        height: 3px;
+    }
+
+    .bh-card--upcoming .bh-card__stripe {
+        background: linear-gradient(90deg, var(--bh-teal), var(--bh-green));
+    }
+
+    .bh-card--finished .bh-card__stripe {
+        background: linear-gradient(90deg, #2e3242, #3d4255);
+    }
+
+    .bh-card__body {
+        padding: 22px 24px;
+    }
+
+    .bh-card__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .bh-card__movie {
+        font-family: var(--bh-font-display);
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--bh-text);
+        margin: 0;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+    }
+
+    .bh-status {
+        font-family: var(--bh-font-body);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 50px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .bh-status--upcoming {
+        background: var(--bh-green-dim);
+        color: var(--bh-green);
+        border: 1px solid rgba(34,212,114,0.25);
+    }
+
+    .bh-status--finished {
+        background: rgba(100,108,130,0.13);
+        color: var(--bh-muted);
+        border: 1px solid rgba(100,108,130,0.2);
+    }
+
+    .bh-card__meta {
+        font-size: 0.78rem;
+        font-weight: 400;
+        color: var(--bh-muted);
+        margin-bottom: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        line-height: 1.4;
+    }
+
+    .bh-meta-sep {
+        opacity: 0.35;
+    }
+
+    /* Perforation */
+    .bh-perforation {
+        display: flex;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .bh-perforation__circle {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--bh-bg);
+        flex-shrink: 0;
+    }
+
+    .bh-perforation__circle--left {
+        margin-left: -24px;
+    }
+
+    .bh-perforation__circle--right {
+        margin-right: -24px;
+    }
+
+    .bh-perforation__line {
+        flex: 1;
+        border-top: 2px dashed rgba(255,255,255,0.06);
+        margin: 0 5px;
+    }
+
+    /* Stats */
+    .bh-stats {
+        display: flex;
+        align-items: stretch;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid var(--bh-border);
+        border-radius: var(--bh-radius-sm);
+        margin-bottom: 18px;
+        overflow: hidden;
+    }
+
+    .bh-stat {
+        flex: 1;
+        padding: 11px 8px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .bh-stat-divider {
+        width: 1px;
+        background: var(--bh-border);
+        align-self: stretch;
+    }
+
+    .bh-stat__label {
+        font-family: var(--bh-font-body);
+        font-size: 0.55rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: var(--bh-muted);
+        text-transform: uppercase;
+    }
+
+    .bh-stat__value {
+        font-family: var(--bh-font-display);
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--bh-text);
+        line-height: 1;
+    }
+
+    .bh-stat__value--code {
+        font-family: var(--bh-font-body);
+        color: var(--bh-gold);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .bh-stat__value--price {
+        color: var(--bh-green);
+    }
+
+    /* Actions */
+    .bh-card__actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* ── Buttons ── */
+    .bh-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px 20px;
+        border-radius: var(--bh-radius-sm);
+        font-family: var(--bh-font-body);
+        font-size: 0.84rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+        box-sizing: border-box;
+        letter-spacing: 0.1px;
+    }
+
+    .bh-btn--full {
+        width: 100%;
+    }
+
+    .bh-btn--lg {
+        padding: 13px 34px;
+        font-size: 0.95rem;
+    }
+
+    .bh-btn--primary {
+        background: linear-gradient(135deg, #1d65cc, #3d8ef8);
+        color: #fff;
+        flex: 1;
+    }
+
+        .bh-btn--primary:hover {
+            background: linear-gradient(135deg, #1858b8, #2d7ee8);
+            transform: translateY(-1px);
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .bh-btn--danger-outline {
+        background: var(--bh-red-dim);
+        color: var(--bh-red);
+        border: 1px solid rgba(240,78,101,0.25);
+        padding: 11px 15px;
+        font-size: 1rem;
+    }
+
+        .bh-btn--danger-outline:hover {
+            background: var(--bh-red);
+            color: #fff;
+            transform: translateY(-1px);
+            border-color: var(--bh-red);
+        }
+
+    .bh-btn--danger {
+        background: var(--bh-red);
+        color: #fff;
+    }
+
+        .bh-btn--danger:hover {
+            background: #d8384e;
+            transform: translateY(-1px);
+        }
+
+    .bh-btn--ghost {
+        background: rgba(255,255,255,0.04);
+        color: var(--bh-muted);
+        border: 1px solid var(--bh-border);
+    }
+
+        .bh-btn--ghost:hover {
+            background: rgba(255,255,255,0.09);
+            color: var(--bh-text);
+        }
+
+    /* ── Modal ── */
+    .bh-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+    }
+
+    .bh-modal-overlay--active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+        .bh-modal-overlay--active .bh-modal {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+    .bh-modal {
+        background: var(--bh-card);
+        border: 1px solid var(--bh-border);
+        border-radius: 22px;
+        padding: 44px 38px;
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+        transform: translateY(18px) scale(0.97);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34, 1.5, 0.64, 1);
+    }
+
+    .bh-modal__icon-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+        width: 76px;
+        height: 76px;
+    }
+
+    .bh-modal__icon-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--bh-red);
+        opacity: 0;
+    }
+
+    .bh-modal-overlay--active .bh-modal__icon-ring {
+        animation: ringPulse 1.6s ease-out infinite;
+    }
+
+    @@keyframes ringPulse {
+        0% {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(1.75);
+        }
+    }
+
+    .bh-modal__icon {
+        font-size: 3rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .bh-modal__title {
+        font-family: var(--bh-font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--bh-text);
+        margin: 0 0 14px;
+        letter-spacing: -0.02em;
+    }
+
+    .bh-modal__text {
+        color: var(--bh-text-soft);
+        font-size: 0.92rem;
+        font-weight: 400;
+        line-height: 1.65;
+        margin-bottom: 6px;
+    }
+
+    .bh-modal__code {
+        color: var(--bh-gold);
+        font-family: var(--bh-font-body);
+        font-weight: 700;
+    }
+
+    .bh-modal__subtext {
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: var(--bh-red);
+        opacity: 0.8;
+        margin-bottom: 30px;
+        letter-spacing: 0.2px;
+    }
+
+    .bh-modal__actions {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+        .bh-modal__actions form {
+            flex: 1;
+            display: flex;
+        }
+
+    /* ── Responsive ── */
+    @@media (max-width: 640px) {
+        .bh-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bh-controls {
+            flex-direction: column;
+        }
+
+        .bh-filters {
+            width: 100%;
+            justify-content: flex-start;
+            overflow-x: auto;
+        }
+
+        .bh-modal {
+            padding: 32px 22px;
+        }
+
+        .bh-modal__actions {
+            flex-direction: column-reverse;
+        }
+    }
+</style>
+
+<div class="bh-page">
+    <div class="bh-bg">
+        <div class="bh-bg-reel bh-bg-reel--left"></div>
+        <div class="bh-bg-reel bh-bg-reel--right"></div>
+    </div>
+
+    <div class="container bh-container">
+
+        <!-- ═══ Header ═══ -->
+        <div class="bh-header">
+
+            <!-- Top row: title + badge -->
+            <div class="bh-header__top">
+                <div>
+                    <span class="bh-header__eyebrow">My Account</span>
+                    <h1 class="bh-header__title">Booking <em>History</em></h1>
+                </div>
+                <div class="bh-header__badge">
+                    <span class="bh-badge-count">@Model.Count()</span>
+                    <span class="bh-badge-label">Total Ordering</span>
+                </div>
+            </div>
+
+            <!-- Controls row: search + filter pills -->
+            @if (Model.Any())
+            {
+                <div class="bh-controls">
+                    <div class="bh-search-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        <input class="bh-search" type="text" id="searchInput" placeholder="Search by movie or booking code…" />
+                    </div>
+                    <div class="bh-filters">
+                        <button class="bh-filter-btn active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+                        <button class="bh-filter-btn" data-filter="finished" onclick="setFilter(this,'finished')">✓ Finished</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Success Alert -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="bh-alert bh-alert--success">
+                <span>✓</span>
+                <span>@TempData["Success"]!.ToString()</span>
+                <button class="bh-alert__close" type="button" onclick="this.parentElement.remove()">×</button>
+            </div>
+        }
+
+        <!-- Empty State -->
+        @if (!Model.Any())
+        {
+            <div class="bh-empty">
+                <span class="bh-empty__icon">🎟️</span>
+                <h3 class="bh-empty__title">No Bookings Yet</h3>
+                <p class="bh-empty__text">Your cinema journey hasn't started yet. Book your first ticket now!</p>
+                <a asp-action="Index" asp-controller="Home" class="bh-btn bh-btn--primary bh-btn--lg">
+                    Browse Movies
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="bh-grid" id="bookingGrid">
+                @foreach (var booking in Model)
+                {
+                    bool isUpcoming = booking.ShowTime > DateTime.Now;
+                    <div class="bh-card @(isUpcoming ? "bh-card--upcoming" : "bh-card--finished")"
+                         data-status="@(isUpcoming ? "upcoming" : "finished")"
+                         data-movie="@booking.MovieName.ToLower()"
+                         data-code="@booking.BookingCode.ToLower()">
+                        <div class="bh-card__stripe"></div>
+                        <div class="bh-card__body">
+
+                            <div class="bh-card__top">
+                                <h4 class="bh-card__movie">@booking.MovieName</h4>
+                                <span class="bh-status @(isUpcoming ? "bh-status--upcoming" : "bh-status--finished")">
+                                    @(isUpcoming ? "▶ Upcoming" : "✓ Finished")
+                                </span>
+                            </div>
+
+                            <div class="bh-card__meta">
+                                <span>📍 @booking.HallName</span>
+                                <span class="bh-meta-sep">·</span>
+                                <span>📅 @booking.ShowTime.ToString("dd MMM yyyy — hh:mm tt")</span>
+                            </div>
+
+                            <div class="bh-perforation">
+                                <div class="bh-perforation__circle bh-perforation__circle--left"></div>
+                                <div class="bh-perforation__line"></div>
+                                <div class="bh-perforation__circle bh-perforation__circle--right"></div>
+                            </div>
+
+                            <div class="bh-stats">
+                                <div class="bh-stat">
+                                    <span class="bh-stat__label">Booking No.</span>
+                                    <span class="bh-stat__value bh-stat__value--code">#@booking.BookingCode</span>
+                                </div>
+                                <div class="bh-stat-divider"></div>
+                                <div class="bh-stat">
+                                    <span class="bh-stat__label">Tickets</span>
+                                    <span class="bh-stat__value">@booking.TicketCount</span>
+                                </div>
+                                <div class="bh-stat-divider"></div>
+                                <div class="bh-stat">
+                                    <span class="bh-stat__label">Total</span>
+                                    <span class="bh-stat__value bh-stat__value--price">@booking.TotalPrice.ToString("C")</span>
+                                </div>
+                            </div>
+
+                            <div class="bh-card__actions">
+                                <a asp-action="BookingSuccess" asp-route-id="@booking.BookingId"
+                                   class="bh-btn bh-btn--primary">
+                                    🎫 View Tickets
+                                </a>
+                                <button type="button"
+                                        class="bh-btn bh-btn--danger-outline"
+                                        onclick="openDeleteModal('@booking.BookingId', '@booking.BookingCode')">
+                                    🗑
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+                <div class="bh-no-results" id="noResults">No bookings match your search.</div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- ═══ Delete Modal ═══ -->
+<div class="bh-modal-overlay" id="deleteModalOverlay">
+    <div class="bh-modal">
+        <div class="bh-modal__icon-wrap">
+            <div class="bh-modal__icon-ring"></div>
+            <span class="bh-modal__icon">🗑️</span>
+        </div>
+        <h3 class="bh-modal__title">Delete Booking?</h3>
+        <p class="bh-modal__text">
+            You're about to permanently remove booking
+            <strong id="bookingCodeText" class="bh-modal__code"></strong>
+            from your history.
+        </p>
+        <p class="bh-modal__subtext">This action cannot be undone.</p>
+        <div class="bh-modal__actions">
+            <button type="button" class="bh-btn bh-btn--ghost bh-btn--full" onclick="closeDeleteModal()">
+                No, Keep It
+            </button>
+            <form id="deleteForm" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bh-btn bh-btn--danger bh-btn--full">
+                    Yes, Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        /* ── Delete modal ── */
+        function openDeleteModal(bookingId, bookingCode) {
+            document.getElementById('bookingCodeText').innerText = '#' + bookingCode;
+            document.getElementById('deleteForm').action = '/Customer/Booking/DeleteBooking/' + bookingId;
+            document.getElementById('deleteModalOverlay').classList.add('bh-modal-overlay--active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModalOverlay').classList.remove('bh-modal-overlay--active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('deleteModalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
+
+        /* ── Card entrance animation ── */
+        document.querySelectorAll('.bh-card').forEach(function (card, i) {
+            card.style.animationDelay = (i * 0.07) + 's';
+        });
+
+        /* ── Search + Filter ── */
+        var currentFilter = 'all';
+
+        function setFilter(btn, filter) {
+            currentFilter = filter;
+
+            // Update button styles
+            document.querySelectorAll('.bh-filter-btn').forEach(function (b) {
+                b.classList.remove('active', 'active-green', 'active-muted');
+            });
+
+            if (filter === 'all')      btn.classList.add('active');
+            if (filter === 'upcoming') btn.classList.add('active-green');
+            if (filter === 'finished') btn.classList.add('active-muted');
+
+            applyFilters();
+        }
+
+        var searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+
+        function applyFilters() {
+            var query = (searchInput ? searchInput.value.toLowerCase().trim() : '');
+            var cards = document.querySelectorAll('.bh-card');
+            var visible = 0;
+
+            cards.forEach(function (card) {
+                var statusMatch = (currentFilter === 'all') || (card.dataset.status === currentFilter);
+                var textMatch   = !query ||
+                                  card.dataset.movie.includes(query) ||
+                                  card.dataset.code.includes(query);
+
+                if (statusMatch && textMatch) {
+                    card.style.display = '';
+                    visible++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            var noResults = document.getElementById('noResults');
+            if (noResults) {
+                noResults.style.display = visible === 0 ? 'block' : 'none';
+            }
+        }
+    </script>
+}

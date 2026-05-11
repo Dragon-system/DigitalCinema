@@ -1,0 +1,66 @@
+﻿@model DigitalCinema.ViewModel.AttendanceReportVM
+
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-file-earmark-bar-graph"></i> تقرير حضور: @Model.MovieName</h5>
+            <span class="badge bg-light text-primary p-2">@Model.ShowTime.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+        <div class="card-body">
+            <div class="row text-center mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 border rounded bg-light shadow-sm">
+                        <small class="text-muted d-block">إجمالي التذاكر</small>
+                        <span class="h3 fw-bold">@Model.TotalBookedTickets</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 border rounded bg-success-subtle shadow-sm">
+                        <small class="text-success d-block">تم الدخول</small>
+                        <span class="h3 fw-bold text-success">@Model.AttendedCount</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 border rounded bg-danger-subtle shadow-sm">
+                        <small class="text-danger d-block">متبقي</small>
+                        <span class="h3 fw-bold text-danger">@(Model.TotalBookedTickets - Model.AttendedCount)</span>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-hover align-middle border">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>كود التذكرة</th>
+                        <th>رقم الكرسي</th>
+                        <th>الحالة</th>
+                        <th>وقت الدخول</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var t in Model.Tickets)
+                    {
+                        <tr>
+                            <td class="fw-bold text-uppercase">@t.TicketCode</td>
+                            <td><span class="badge bg-secondary p-2">@t.SeatNumber</span></td>
+                            <td>
+                                @if (t.IsUsed)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-check-lg"></i> حضر</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-clock"></i> لم يحضر</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@(t.UsedAt?.ToString("HH:mm") ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white text-end">
+            <button onclick="window.print()" class="btn btn-outline-dark"><i class="bi bi-printer"></i> طباعة التقرير</button>
+        </div>
+    </div>
+</div>

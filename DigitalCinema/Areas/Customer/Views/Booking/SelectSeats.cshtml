@@ -1,0 +1,258 @@
+﻿@model Show
+
+@{
+    ViewData["Title"] = "Select Seats";
+    var showSeats = ViewBag.ShowSeats as IEnumerable<ShowSeat>;
+}
+
+<style>
+    /* تصميم السينما والكراسي */
+    .seat-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); /* 10 كراسي في الصف الواحد */
+        gap: 12px;
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .seat-wrapper {
+        position: relative;
+    }
+
+    .seat-checkbox {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .seat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: #e0e0e0;
+        border-radius: 6px 6px 16px 16px; /* شكل كرسي السينما */
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 4px solid #bdbdbd;
+    }
+
+        .seat:hover:not(.occupied) {
+            background: #d1d1d1;
+            transform: translateY(-2px);
+        }
+
+    /* حالة الكرسي المختار */
+    .seat-checkbox:checked + .seat {
+        background: #28a745 !important;
+        color: white;
+        border-bottom-color: #1e7e34;
+        transform: scale(1.1);
+    }
+
+    /* حالة الكرسي المحجوز */
+    .seat.occupied {
+        background: #dc3545 !important;
+        color: white;
+        cursor: not-allowed;
+        border-bottom-color: #a71d2a;
+    }
+
+    /* تصميم الشاشة */
+    .screen-container {
+        perspective: 400px;
+        text-align: center;
+    }
+
+    .screen-box {
+        height: 15px;
+        background: #e0e0e0;
+        width: 70%;
+        margin: 0 auto;
+        transform: rotateX(-30deg);
+        box-shadow: 0 15px 25px rgba(255,255,255,0.3);
+        border-radius: 5px;
+    }
+
+    .screen-text {
+        font-size: 12px;
+        color: #888;
+        letter-spacing: 5px;
+        display: block;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container mb-5" style="padding-top: 100px;">
+
+    <!-- Movie Info Card -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                <div class="col-md-2 text-center">
+                    <img src="~/Images/Movie/@Model.ShowMovieHall.Movie.MainImg"
+                         class="rounded-3 shadow"
+                         style="width:90px; height:120px; object-fit:cover;">
+                </div>
+                <div class="col-md-7">
+                    <h3 class="fw-bold mb-1">@Model.ShowMovieHall.Movie.Name</h3>
+                    <div class="d-flex flex-wrap gap-3 text-muted mt-2">
+                        <span><i class="bi bi-building text-primary"></i> @Model.ShowMovieHall.Hall.Name</span>
+                        <span><i class="bi bi-clock text-success"></i> @Model.StartTime.ToString("hh:mm tt")</span>
+                        <span><i class="bi bi-tag text-warning"></i> @Model.TicketPrice.ToString("C")</span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <div class="bg-light rounded-3 p-3 text-center">
+                        <small class="text-muted d-block">Available Seats</small>
+                        <h3 class="fw-bold text-success mb-0">@showSeats.Count(s => s.Status == SeatStatus.Available)</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="d-flex justify-content-center gap-4 mb-4 flex-wrap">
+        <div class="d-flex align-items-center gap-2">
+            <div class="seat available" style="width:25px; height:25px; cursor:default;"></div>
+            <small class="text-muted">Available</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="seat" style="width:25px; height:25px; background:#28a745; cursor:default;"></div>
+            <small class="text-muted">Selected</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="seat occupied" style="width:25px; height:25px; cursor:default;"></div>
+            <small class="text-muted">Booked</small>
+        </div>
+    </div>
+
+    <!-- Screen -->
+    <div class="screen-container mb-5">
+        <div class="screen-box"></div>
+        <span class="screen-text">🎬 SCREEN</span>
+    </div>
+
+    <!-- Seat Map -->
+    <div class="d-flex justify-content-center mb-5">
+        <div class="seat-grid">
+            @foreach (var item in showSeats)
+            {
+                <div class="seat-wrapper">
+                    <input type="checkbox"
+                           id="seat-@item.Id"
+                           value="@item.Id"
+                           data-seatnum="@item.Seat.SeatNumber"
+                           class="seat-checkbox"
+                           @(item.Status != SeatStatus.Available ? "disabled" : "") />
+                    <label for="seat-@item.Id"
+                           class="seat @(item.Status != SeatStatus.Available ? "occupied" : "available")">
+                        @item.Seat.SeatNumber
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Booking Summary Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white py-3 text-center">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-receipt"></i> Booking Summary</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Count</span>
+                        <span class="fw-bold fs-5" id="count">0</span>
+                    </div>
+                    <div id="selectedSeatsDisplay" class="mb-3" style="display:none;">
+                        <div id="seatBadges" class="d-flex flex-wrap gap-1"></div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="fw-bold fs-4 text-success" id="total">0.00 EGP</span>
+                    </div>
+
+                    <button type="button" class="btn btn-success btn-lg w-100 shadow mb-2" id="btnConfirm" disabled data-bs-toggle="modal" data-bs-target="#confirmModal">
+                        Confirm Selection
+                    </button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-danger w-100">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning border-0 py-3">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-exclamation-triangle-fill"></i> Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p>You are about to book seats: <br><strong id="modalSeats" class="fs-5 text-primary"></strong></p>
+                <div class="alert alert-info small">Note: You will be redirected to the payment page.</div>
+
+                <form asp-action="ConfirmBooking" method="post">
+                    <input type="hidden" name="showId" value="@Model.Id" />
+                    <input type="hidden" name="selectedSeatIds" id="hiddenSelectedSeats" />
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3 shadow">Proceed to Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const ticketPrice = @Model.TicketPrice;
+        const checkboxes = document.querySelectorAll('.seat-checkbox');
+        const countDisplay = document.getElementById('count');
+        const totalDisplay = document.getElementById('total');
+        const btnConfirm = document.getElementById('btnConfirm');
+        const hiddenInput = document.getElementById('hiddenSelectedSeats');
+        const modalSeatsText = document.getElementById('modalSeats');
+        const seatBadges = document.getElementById('seatBadges');
+        const displayDiv = document.getElementById('selectedSeatsDisplay');
+
+        checkboxes.forEach(box => {
+            box.addEventListener('change', () => {
+                let selectedIds = [];
+                let seatNumbers = [];
+
+                checkboxes.forEach(c => {
+                    if (c.checked) {
+                        selectedIds.push(c.value);
+                        seatNumbers.push(c.getAttribute('data-seatnum'));
+                    }
+                });
+
+                const count = selectedIds.length;
+                countDisplay.innerText = count;
+                totalDisplay.innerText = (count * ticketPrice).toFixed(2) + " EGP";
+
+                hiddenInput.value = selectedIds.join(',');
+                modalSeatsText.innerText = seatNumbers.join(', ');
+                btnConfirm.disabled = count === 0;
+
+                if(count > 0) {
+                    displayDiv.style.display = 'block';
+                    seatBadges.innerHTML = seatNumbers.map(n => `<span class="badge bg-success">${n}</span>`).join(' ');
+                } else {
+                    displayDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

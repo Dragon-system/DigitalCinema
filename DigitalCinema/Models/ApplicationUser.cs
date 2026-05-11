@@ -11,5 +11,7 @@ namespace DigitalCinema.Models
         public DateOnly DOB { get; set; } = new DateOnly();
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<PostComment> PostComments { get; set; } = new List<PostComment>();
+
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

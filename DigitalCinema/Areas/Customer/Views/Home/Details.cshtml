@@ -1,0 +1,370 @@
+﻿@model MovieWithRelatedVM
+
+@{
+    ViewData["Title"] = Model.Movie.Name;
+}
+
+<!-- ===== HERO ===== -->
+<div class="movie-hero position-relative overflow-hidden"
+     style="background-image: url('@Url.Content("~/Images/Movie/" + Model.Movie.MainImg)');
+            background-size: cover;
+            background-position: center top;
+            min-height: 520px;">
+
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
+         style="background: linear-gradient(to right, rgba(5,5,20,0.93) 50%, rgba(5,5,20,0.25) 100%);"></div>
+
+    <div class="container position-relative py-5 d-flex align-items-center"
+         style="z-index:2; min-height:520px;">
+        <div class="text-white" style="max-width:660px;">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" class="text-warning text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item text-white-50">@Model.Movie.Category.Name</li>
+                    <li class="breadcrumb-item text-white-50 active">@Model.Movie.Name</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+                <span class="badge bg-danger px-3 py-2 fs-6">
+                    <i class="bi bi-fire"></i> Most Popular
+                </span>
+                <span class="badge bg-secondary px-3 py-2 fs-6">
+                    <i class="bi bi-collection-play"></i> @Model.Movie.Category.Name
+                </span>
+                <span class="badge bg-dark px-3 py-2 fs-6">
+                    <i class="bi bi-camera-reels"></i> @Model.Movie.Cinema.Name
+                </span>
+            </div>
+
+            <h1 class="display-4 fw-bold mb-3">@Model.Movie.Name</h1>
+            <p class="text-white-50 mb-4" style="font-size:1.05rem; line-height:1.7;">
+                @Model.Movie.Description
+            </p>
+
+            <!-- العروض المتاحة -->
+            @if (Model.Shows != null && Model.Shows.Any())
+            {
+                <div class="shows-box p-3 rounded-3 mb-4"
+                     style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);">
+                    <p class="text-white-50 mb-2 small">
+                        <i class="bi bi-calendar-event"></i> Choose a show date:
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var show in Model.Shows)
+                        {
+                            <a asp-area="Customer"
+                               asp-controller="Booking"
+                               asp-action="SelectSeats"
+                               asp-route-id="@show.Id"
+                               class="btn btn-warning fw-bold shadow-sm">
+                                <i class="bi bi-ticket-perforated"></i>
+                                @show.StartTime.ToString("dd/MM — hh:mm tt")
+                                <span class="badge bg-dark ms-1">@show.TicketPrice.ToString("C")</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-lg mb-4" disabled>
+                    <i class="bi bi-x-circle"></i> No shows are currently available.
+                </button>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- ===== END HERO ===== -->
+
+<div class="container mt-5 mb-5">
+
+    <!-- ===== الصورة الرئيسية + بيانات الفيلم ===== -->
+    <div class="row g-5 mb-5">
+
+        <!-- الصورة الرئيسية -->
+        <div class="col-md-3">
+            <img src="~/Images/Movie/@Model.Movie.MainImg"
+                 class="img-fluid rounded-3 shadow-lg w-100"
+                 alt="@Model.Movie.Name"
+                 style="max-height:280px; object-fit:cover;">
+        </div>
+
+        <!-- بيانات + صور فرعية -->
+        <div class="col-md-9">
+            <h2 class="fw-bold mb-1">@Model.Movie.Name</h2>
+            <span class="badge bg-primary mb-3 px-3 py-2">@Model.Movie.Category.Name</span>
+
+            <!-- Info Boxes -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-sm-3">
+                    <div class="info-box text-center p-3 rounded-3 bg-light h-100">
+                        <i class="bi bi-tag-fill text-primary fs-4"></i>
+                        <div class="fw-bold mt-1">@Model.Movie.Price.ToString("C")</div>
+                        <small class="text-muted">Price</small>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3">
+                    <div class="info-box text-center p-3 rounded-3 bg-light h-100">
+                        <i class="bi bi-camera-reels-fill text-danger fs-4"></i>
+                        <div class="fw-bold mt-1">@Model.Movie.Cinema.Name</div>
+                        <small class="text-muted">Cinema</small>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3">
+                    <div class="info-box text-center p-3 rounded-3 bg-light h-100">
+                        <i class="bi bi-calendar-event-fill text-success fs-4"></i>
+                        <div class="fw-bold mt-1">@Model.Movie.ShowTime.ToString("dd/MM/yyyy")</div>
+                        <small class="text-muted">Show Date</small>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3">
+                    <div class="info-box text-center p-3 rounded-3 bg-light h-100">
+                        <i class="bi bi-collection-play-fill text-warning fs-4"></i>
+                        <div class="fw-bold mt-1">@(Model.Shows?.Count ?? 0)</div>
+                        <small class="text-muted">عروض متاحة</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الصور الفرعية -->
+            @if (Model.SupImgs != null && Model.SupImgs.Any())
+            {
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-images text-warning"></i> Movie Images
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var img in Model.SupImgs)
+                    {
+                        <div class="sup-img-wrap rounded-3 overflow-hidden shadow-sm"
+                             data-bs-toggle="modal" data-bs-target="#imgModal"
+                             data-img="@Url.Content("~/Images/Movie/" + img.SubImg)"
+                             style="cursor:pointer;">
+                            <img src="~/Images/Movie/SubImgs/@img.SubImg"
+                                 alt="Movie Image"
+                                 style="width:140px; height:90px; object-fit:cover; display:block;">
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Modal لعرض الصورة كبيرة -->
+    <div class="modal fade" id="imgModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark border-0">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0 text-center">
+                    <img id="modalImg" src="" class="img-fluid rounded-3" alt="Movie Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== طاقم التمثيل ===== -->
+    @if (Model.ActorMovies != null && Model.ActorMovies.Any())
+    {
+        <hr class="my-5">
+        <h4 class="fw-bold mb-4">
+            <i class="bi bi-people-fill text-secondary"></i> Cast
+        </h4>
+        <div class="d-flex flex-wrap gap-4 mb-5">
+            @foreach (var am in Model.ActorMovies)
+            {
+                <div class="actor-card text-center">
+                    <div class="actor-img-wrap rounded-circle overflow-hidden mx-auto mb-2 shadow"
+                         style="width:90px; height:90px; border:3px solid #dee2e6;">
+                        @if (!string.IsNullOrEmpty(am.Actor.Img))
+                        {
+                            <img src="~/Images/Actor/@am.Actor.Img"
+                                 class="w-100 h-100"
+                                 style="object-fit:cover;"
+                                 alt="@am.Actor.Name">
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 bg-secondary d-flex align-items-center justify-content-center">
+                                <i class="bi bi-person-fill text-white fs-2"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="fw-bold" style="font-size:0.9rem;">@am.Actor.Name</div>
+                    <small class="text-muted">@am.Actor.Role</small>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- ===== العروض المتاحة (جدول) ===== -->
+    @if (Model.Shows != null && Model.Shows.Any())
+    {
+        <hr class="my-5">
+        <h4 class="fw-bold mb-4">
+            <i class="bi bi-calendar-week text-primary"></i> Available Show times
+        </h4>
+        <div class="row g-3 mb-5">
+            @foreach (var show in Model.Shows)
+            {
+                <div class="col-md-4">
+                    <div class="show-card p-4 rounded-3 border shadow-sm d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold fs-5">
+                                <i class="bi bi-clock text-primary"></i>
+                                @show.StartTime.ToString("hh:mm tt")
+                            </div>
+                            <small class="text-muted">
+                                @show.StartTime.ToString("dd MMMM yyyy")
+                            </small>
+                            <div class="text-success fw-bold mt-1">@show.TicketPrice.ToString("C") / Ticket</div>
+                        </div>
+                        <a asp-area="Customer"
+                           asp-controller="Booking"
+                           asp-action="SelectSeats"
+                           asp-route-id="@show.Id"
+                           class="btn btn-primary">
+                            <i class="bi bi-ticket-perforated"></i> Book
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- ===== أفلام من نفس الفئة ===== -->
+    @if (Model.SamCategory != null && Model.SamCategory.Any())
+    {
+        <hr class="my-5">
+        <h4 class="fw-bold mb-4">
+            <i class="bi bi-collection-play text-primary"></i>
+            Movies from the same category (@Model.Movie.Category.Name)
+        </h4>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
+            @foreach (var item in Model.SamCategory)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm movie-card">
+                        <img src="~/Images/Movie/@item.MainImg"
+                             class="card-img-top"
+                             alt="@item.Name"
+                             style="height:220px; object-fit:cover;">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold text-truncate">@item.Name</h6>
+                            <p class="text-primary fw-bold mb-2">@item.Price.ToString("C")</p>
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-primary w-100 stretched-link">
+                                Details 
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- ===== أفلام مشابهة ===== -->
+    @if (Model.SamName != null && Model.SamName.Any())
+    {
+        <h4 class="fw-bold mb-4">
+            <i class="bi bi-film text-danger"></i> Similar Movies
+        </h4>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
+            @foreach (var item in Model.SamName)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm movie-card">
+                        <img src="~/Images/Movie/@item.MainImg"
+                             class="card-img-top"
+                             alt="@item.Name"
+                             style="height:220px; object-fit:cover;">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-truncate mb-1">@item.Name</h6>
+                            <span class="badge bg-light text-dark">@item.Price.ToString("C")</span>
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                               class="btn btn-link btn-sm w-100 mt-2 text-decoration-none">
+                                Watch Movie
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+        // Modal الصور الفرعية
+        const imgModal = document.getElementById('imgModal');
+        if (imgModal) {
+            imgModal.addEventListener('show.bs.modal', function (e) {
+                const wrap = e.relatedTarget;
+                document.getElementById('modalImg').src = wrap.dataset.img;
+            });
+        }
+    </script>
+}
+
+<style>
+    .movie-hero {
+        margin-top: 76px; /* navbar fixed-top */
+    }
+
+    .movie-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.15) !important;
+        }
+
+    .actor-card {
+        transition: transform 0.2s ease;
+    }
+
+        .actor-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .sup-img-wrap {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .sup-img-wrap:hover {
+            transform: scale(1.06);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+        }
+
+    .info-box {
+        transition: transform 0.2s;
+    }
+
+        .info-box:hover {
+            transform: translateY(-3px);
+        }
+
+    .show-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+    }
+
+        .show-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.1) !important;
+        }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        color: rgba(255,255,255,0.4);
+    }
+</style>

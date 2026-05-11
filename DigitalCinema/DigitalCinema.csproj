@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>35c41bb3-9090-44ce-bfe3-bffd4089437c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,11 +16,14 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
+			
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Stripe.net" Version="51.1.0" />
 	</ItemGroup>
-	<ItemGroup>
+	  
+	  	<ItemGroup>
 	  <Folder Include="wwwroot\Images\Movie\SubImgs\" />
 	  <Folder Include="wwwroot\Images\Actor\" />
 	  <Folder Include="wwwroot\Images\Profile\" />

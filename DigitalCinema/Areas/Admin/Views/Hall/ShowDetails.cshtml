@@ -1,0 +1,70 @@
+﻿@model DigitalCinema.Models.Show
+
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between">
+            <h4 class="mb-0">
+                <i class="bi bi-info-circle"></i> تفاصيل عرض: @Model.ShowMovieHall.Movie.Name
+            </h4>
+            <span class="badge bg-primary">@Model.StartTime.ToString("f")</span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4 text-center">
+                <div class="col"><strong>القاعة:</strong> @Model.ShowMovieHall.Hall.Name</div>
+                <div class="col"><strong>سعر التذكرة:</strong> @Model.TicketPrice.ToString("C")</div>
+            </div>
+
+            <!-- رسم خريطة السينما -->
+            <div class="cinema-screen mb-5">
+                <div class="screen-label py-2 bg-secondary text-white text-center rounded shadow-sm">
+                    الشاشة (SCREEN)
+                </div>
+            </div>
+
+            <div class="row row-cols-auto g-2 justify-content-center">
+                @foreach (var showSeat in (IEnumerable<DigitalCinema.Models.ShowSeat>)ViewBag.ShowSeats)
+                {
+                    <div class="col">
+                        <div class="seat-box text-center p-2 rounded
+                                 @(showSeat.Status == SeatStatus.Available ? "bg-success text-white" :
+                                                            showSeat.Status == SeatStatus.Reserved ? "bg-warning text-dark" : "bg-danger text-white")"
+                         style="width: 60px; font-size: 0.8rem; cursor: pointer;"
+                         title="الحالة: @showSeat.Status">
+                        <i class="bi bi-chair-fill"></i><br />
+                        @showSeat.Seat.SeatNumber
+                    </div>
+                </div>
+                                }
+            </div>
+
+            <!-- توضيح الألوان (Legend) -->
+            <div class="mt-5 d-flex justify-content-center gap-4">
+                <div><span class="badge bg-success">&nbsp;</span> متاح</div>
+                <div><span class="badge bg-warning">&nbsp;</span> محجوز مؤقتاً</div>
+                <div><span class="badge bg-danger">&nbsp;</span> تم الحجز</div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a asp-action="Index" class="btn btn-secondary px-4">رجوع للجدول</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cinema-screen {
+        perspective: 400px;
+    }
+
+    .screen-label {
+        transform: rotateX(-15deg);
+        width: 80%;
+        margin: 0 auto;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .seat-box:hover {
+        opacity: 0.8;
+        transform: scale(1.1);
+        transition: 0.2s;
+    }
+</style>
